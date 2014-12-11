@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Dec 09, 2014 at 06:08 PM
+-- Generation Time: Dec 11, 2014 at 02:46 AM
 -- Server version: 5.5.38
 -- PHP Version: 5.6.2
 
@@ -86,6 +86,15 @@ BEGIN
         END IF;
 END$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `follow_action`(IN `from_uname` VARCHAR(20), IN `to_uname` VARCHAR(20))
+    NO SQL
+BEGIN
+  INSERT INTO follow SET
+    from_usr = from_uname,
+    to_usr = to_uname,
+    f_time = NOW();
+END$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `list_genre`()
     NO SQL
 BEGIN
@@ -96,6 +105,15 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `list_taste`(IN `uname` VARCHAR(20))
     NO SQL
 BEGIN
   SELECT sub FROM u_sub WHERE username = uname;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `my_recomList`(IN `uname` INT)
+    NO SQL
+BEGIN
+    SELECT R.listname, R.cid, R.rm_time, C.artistname, C.start_time, V.vname, V.city
+    FROM recommend AS R JOIN concerts AS C JOIN venues AS V
+    ON R.username = uname AND R.cid = C.cid AND C.vid = V.vid
+    ORDER BY R.rm_time DESC;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `set_reg_time`(IN `submit_name` VARCHAR(20), IN `regT` DATETIME, IN `usertype` VARCHAR(10))
@@ -150,6 +168,82 @@ BEGIN
     WHERE usr_geo.username = uname AND usr_follower.to_usr = uname    
           AND usr_following.from_usr = uname
           AND usr_review.username = uname;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `usr_newMsg_num`(IN `uname` VARCHAR(20))
+    NO SQL
+BEGIN
+    DECLARE lat DATETIME;
+    DECLARE newM INT;
+
+    SET newM = 0;
+
+    SELECT lastaccess INTO lat
+    FROM users
+    WHERE username = uname;
+    
+    SELECT COUNT(*) INTO newM
+    FROM users AS Me JOIN follow AS Star JOIN recommend AS R
+    ON Me.username = uname AND Me.username = Star.from_usr AND Star.to_usr = R.username AND R.rm_time >= lat
+    GROUP BY Me.username;
+    
+    SELECT newM as newMessage;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `usr_new_feed`(IN `uname` VARCHAR(20))
+    NO SQL
+BEGIN
+    DECLARE lat DATETIME;
+    DECLARE newM INT;
+
+    SET newM = 0;
+
+    SELECT lastaccess INTO lat
+    FROM users
+    WHERE username = uname;
+    
+    SELECT COUNT(*) INTO newM
+    FROM users AS Me JOIN follow AS Star JOIN recommend AS R
+    ON Me.username = uname AND Me.username = Star.from_usr AND Star.to_usr = R.username AND R.rm_time >= lat
+    GROUP BY Me.username;
+
+    IF newM > 0 THEN
+        (SELECT Star.to_usr AS star, R.listname, R.rm_time, R.cid, C.artistname, C.start_time, V.vname, V.street, V.city, V.state, V.zipcode
+        FROM users AS Me JOIN follow AS Star JOIN recommend AS R JOIN concerts AS C JOIN venues AS V
+        ON Me.username = uname AND Me.username = Star.from_usr AND Star.to_usr = R.username AND R.rm_time >= lat
+                               AND R.cid = C.cid AND C.vid = V.vid)
+        UNION
+        (SELECT Star.to_usr AS star, R.listname, R.rm_time, R.cid, C.artistname, C.start_time, V.vname, V.street, V.city, V.state, V.zipcode
+        FROM users AS Me JOIN follow AS Star JOIN recommend AS R JOIN concerts AS C JOIN venues AS V
+        ON Me.username = uname AND Me.username = Star.from_usr AND Star.to_usr = R.username AND R.rm_time < lat
+                               AND R.cid = C.cid AND C.vid = V.vid)
+        ORDER BY rm_time DESC LIMIT 3;
+    ELSE
+        SELECT Star.to_usr AS star, R.listname, R.rm_time, R.cid, C.artistname, C.start_time, V.vname, V.street, V.city, V.state, V.zipcode
+        FROM users AS Me JOIN follow AS Star JOIN recommend AS R JOIN concerts AS C JOIN venues AS V
+        ON Me.username = uname AND Me.username = Star.from_usr AND Star.to_usr = R.username
+                               AND R.cid = C.cid AND C.vid = V.vid
+        ORDER BY rm_time DESC LIMIT 3;
+    END IF;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `usr_plan_to`(IN `uname` VARCHAR(20))
+    NO SQL
+BEGIN
+  SELECT A.username, A.cid, C.artistname, C.start_time, V.vname, V.street, V.city, V.state, V.zipcode
+  FROM attendance AS A JOIN concerts AS C JOIN venues AS V
+  ON A.cid = C.cid AND C.vid = V.vid
+  WHERE A.username = uname AND A.rating IS NULL AND A.review IS NULL AND C.start_time > NOW()
+  ORDER BY C.start_time ASC;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `usr_vibe_sense`(IN `uname` VARCHAR(20))
+    NO SQL
+BEGIN
+    SELECT C.cid, C.artistname, C.start_time, V.vname, V.street, V.city, V.state, V.zipcode
+    FROM u_sub AS U JOIN a_sub AS A JOIN concerts AS C JOIN venues AS V
+    ON U.sub = A.sub AND A.artistname = C.artistname AND C.vid = V.vid
+    WHERE U.username = uname;
 END$$
 
 DELIMITER ;
@@ -216,9 +310,14 @@ CREATE TABLE `attendance` (
 --
 
 INSERT INTO `attendance` (`username`, `cid`, `rating`, `review`, `rv_time`) VALUES
+('johndoe', '5500000513', NULL, NULL, NULL),
 ('johndoe', '5500000634', NULL, NULL, NULL),
+('johndoe', '5500000791', NULL, NULL, NULL),
 ('johndoe', '5500000953', 8, 'Review: A SPECIAL Guest came to concert last night!', '2014-01-26 10:33:35'),
+('mchotdog', '5500000189', NULL, NULL, NULL),
+('mchotdog', '5500000231', NULL, NULL, NULL),
 ('mchotdog', '5500000432', 8, 'Review: My girlfriend got crazy last night.', '2014-11-25 13:34:14'),
+('mchotdog', '5500000791', NULL, NULL, NULL),
 ('mchotdog', '5500000945', 7, 'Review: A little bit disappointed.', '2014-11-30 11:37:48');
 
 -- --------------------------------------------------------
@@ -238,9 +337,17 @@ CREATE TABLE `a_sub` (
 
 INSERT INTO `a_sub` (`artistname`, `sub`) VALUES
 ('Bob Dylan', 'Alternative rock'),
+('Billy Joel', 'Classic Country'),
+('Interpol', 'Indie folk'),
 ('Belle & Sebastian', 'Indie rock'),
-('Interpol', 'Indie rock'),
-('Snapline', 'Indie rock');
+('Maroon 5', 'Indie rock'),
+('OneRepublic', 'Indie rock'),
+('Damien Rice', 'New School Hip-Hop'),
+('Justin Timberlake', 'New School Hip-Hop'),
+('Snapline', 'Old School Hip-Hop'),
+('Justin Timberlake', 'Pop rock'),
+('OneRepublic', 'Pop rock'),
+('Maroon 5', 'Texas Country');
 
 -- --------------------------------------------------------
 
@@ -263,10 +370,10 @@ CREATE TABLE `concerts` (
 INSERT INTO `concerts` (`cid`, `vid`, `artistname`, `start_time`, `link`) VALUES
 ('5500000189', '8800000843', 'OneRepublic', '2015-04-14 20:00:00', 'http://www.bandsintown.com'),
 ('5500000231', '8800000678', 'Bob Dylan', '2015-07-01 20:00:00', 'http://www.bandsintown.com'),
-('5500000343', '8800000678', 'Linkin Park', '2014-12-12 19:00:00', 'http://www.bandsintown.com'),
-('5500000432', '8800000999', 'Damien Rice', '2014-11-24 19:00:00', 'http://www.bandsintown.com'),
+('5500000343', '8800000999', 'Linkin Park', '2014-12-12 19:00:00', 'http://www.bandsintown.com'),
+('5500000432', '8800000111', 'Damien Rice', '2014-11-24 19:00:00', 'http://www.bandsintown.com'),
 ('5500000513', '8800000333', 'Belle & Sebastian', '2015-06-10 19:00:00', 'http://www.bandsintown.com'),
-('5500000634', '8800000678', 'Snapline', '2015-03-05 19:00:00', 'http://www.bandsintown.com'),
+('5500000634', '8800000843', 'Snapline', '2015-03-05 19:00:00', 'http://www.bandsintown.com'),
 ('5500000791', '8800000111', 'Billy Joel', '2014-12-14 20:00:00', 'http://www.bandsintown.com'),
 ('5500000945', '8800000843', 'Interpol', '2014-11-28 20:00:00', 'http://www.bandsintown.com'),
 ('5500000953', '8800000111', 'Justin Timberlake', '2014-01-25 19:00:00', 'http://www.bandsintown.com');
@@ -282,6 +389,16 @@ CREATE TABLE `fans` (
   `artistname` varchar(30) NOT NULL DEFAULT '',
   `fan_time` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `fans`
+--
+
+INSERT INTO `fans` (`username`, `artistname`, `fan_time`) VALUES
+('johndoe', 'Linkin Park', NULL),
+('johndoe', 'OneRepublic', NULL),
+('mchotdog', 'Bob Dylan', NULL),
+('mchotdog', 'Linkin Park', NULL);
 
 -- --------------------------------------------------------
 
@@ -300,7 +417,7 @@ CREATE TABLE `follow` (
 --
 
 INSERT INTO `follow` (`from_usr`, `to_usr`, `f_time`) VALUES
-('johndoe', 'mchotdog', '2012-10-08 07:28:33'),
+('johndoe', 'mchotdog', '2014-12-10 20:45:43'),
 ('magicmike', 'johndoe', '2014-11-12 08:04:21'),
 ('magicmike', 'mchotdog', '2014-11-27 10:26:35'),
 ('test_user', 'johndoe', '2014-10-07 14:24:29'),
@@ -350,9 +467,12 @@ CREATE TABLE `recommend` (
 --
 
 INSERT INTO `recommend` (`username`, `cid`, `listname`, `rm_time`) VALUES
-('johndoe', '5500000189', 'Where to go this winter', '2014-11-25 15:12:13'),
-('johndoe', '5500000432', 'Where to go this winter', '2014-11-25 15:12:13'),
-('johndoe', '5500000513', 'Where to go this winter', '2014-11-25 15:12:13');
+('mchotdog', '5500000189', 'Where to go this winter', '2014-11-25 15:12:13'),
+('mchotdog', '5500000231', '2015 Must', '2014-12-10 07:26:38'),
+('mchotdog', '5500000343', 'Where to go this winter', '2014-12-10 23:10:00'),
+('mchotdog', '5500000432', 'Where to go this winter', '2014-11-25 15:12:13'),
+('mchotdog', '5500000513', 'Where to go this winter', '2014-11-25 15:12:13'),
+('mchotdog', '5500000634', '2015 Must', '2014-12-01 06:33:25');
 
 -- --------------------------------------------------------
 
@@ -422,10 +542,10 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`username`, `userpwd`, `reg_time`, `login_time`, `lastaccess`) VALUES
-('johndoe', 'abc123', '2011-05-12 13:44:34', '2014-12-09 12:06:06', '2014-12-09 12:06:06'),
+('johndoe', 'abc123', '2011-05-12 13:44:34', '2014-12-10 20:40:32', '2014-12-10 20:45:43'),
 ('magicmike', 'abc123', '2014-01-04 12:34:34', '2014-11-23 13:22:48', '2014-11-25 16:42:53'),
-('mchotdog', 'abc123', '2008-09-23 23:44:34', '2014-12-09 12:06:39', '2014-12-09 12:06:39'),
-('test_user', 'abc123', '2014-12-08 09:45:37', '2014-12-09 12:06:26', '2014-12-09 12:06:26');
+('mchotdog', 'abc123', '2008-09-23 23:44:34', '2014-12-10 17:35:48', '2014-12-10 17:35:48'),
+('test_user', 'abc123', '2014-12-08 09:45:37', '2014-12-10 19:22:45', '2014-12-10 20:13:28');
 
 -- --------------------------------------------------------
 
@@ -482,9 +602,10 @@ CREATE TABLE `u_sub` (
 INSERT INTO `u_sub` (`username`, `sub`) VALUES
 ('johndoe', 'Alternative rock'),
 ('mchotdog', 'Alternative rock'),
+('johndoe', 'Indie folk'),
 ('magicmike', 'Indie folk'),
+('mchotdog', 'Indie folk'),
 ('test_user', 'Indie folk'),
-('johndoe', 'Indie rock'),
 ('mchotdog', 'Indie rock'),
 ('mchotdog', 'New School Hip-Hop'),
 ('test_user', 'Old School Hip-Hop'),

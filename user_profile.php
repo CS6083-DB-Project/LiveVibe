@@ -5,25 +5,63 @@ Date: Dec 4th, 2014 -->
 <!-- PHP and manipulate with livevibe database -->
 <?php
 require ("connectdb.php");
-// Update lastaccess time
-if (isset($_SESSION["username"])) {
-    // Update lastaccesstime when page load
-    $stmtLAT = $mysqli->prepare("CALL update_LAT(?,?,?)");
-    $submit_username = $_SESSION["username"];
-    $LAT = date("Y-m-d H:i:s");
-    $login_type = $_SESSION["login_type"];
-    $stmtLAT->bind_param('sss', $submit_username, $LAT, $login_type);
-    $stmtLAT->execute();
-    $mysqli->next_result();
 
-    // Grab user date to perform user information
+if (isset($_SESSION["username"])) {
     // Set local var
     $username_up = $_SESSION["username"];
+    $login_type = $_SESSION["login_type"];
     $city_up = NULL;
     $state_up = NULL;
     $follower_up = 0;
     $following_up = 0;
     $reviews = 0;
+    $newMsg = 0;
+    $star = NULL;
+    $listname = NULL;
+    $rm_t = NULL;     // time of newly added recommend time
+
+    // Before Update Lastaccess: Grab News Feed on Recommended by LiveVibe Star User
+    // Got How many newMessage user got
+    $stmtMsg = $mysqli->prepare("CALL usr_newMsg_num(?)");
+    $stmtMsg->bind_param('s', $username_up);
+    $stmtMsg->execute();
+    $stmtMsg->bind_result($newMessage);
+    while ($stmtMsg->fetch()) {
+        $newMsg = $newMessage;
+    }
+
+    $mysqli->next_result();
+
+    // Got Concerts started with new update
+    $newCon = array();
+    $stmtNC = $mysqli->prepare("CALL usr_new_feed(?)");
+    $stmtNC->bind_param('s', $username_up);
+    $stmtNC->execute();
+    $stmtNC->bind_result($star, $listname, $rm_time, $cid, $artistname, $start_time, $vname, $street, $city, $state, $zipcode);
+    while ($stmtNC->fetch()) {
+        $one_concert = array("star"       => $star,
+                             "listname"   => $listname,
+                             "cid"        => $cid,
+                             "artistname" => $artistname,
+                             "start_time" => $start_time,
+                             "vname"      => $vname,
+                             "street"     => $street,
+                             "city"       => $city,
+                             "state"      => $state,
+                             "zipcode"    => $zipcode);
+        $newCon[] = $one_concert;
+    }
+
+    $mysqli->next_result();
+
+    // Update lastaccesstime when page load
+    $stmtLAT = $mysqli->prepare("CALL update_LAT(?,?,?)");
+    $LAT = date("Y-m-d H:i:s");
+    $stmtLAT->bind_param('sss', $username_up, $LAT, $login_type);
+    $stmtLAT->execute();
+    $mysqli->next_result();
+
+    // Grab user date to perform user information
     // Execute query
     $stmtUinfo = $mysqli->prepare("CALL up_info(?)");
     $stmtUinfo->bind_param('s', $username_up);
@@ -91,10 +129,26 @@ if (isset($_SESSION["username"])) {
 
     $mysqli->next_result();   
 
-    // Grab NEW Concert Recommended by LiveVibe Star User
-    
-
     // Grab Concert Recommended by LiveVibe System based on Taste
+    $VibeSense = array();
+    $stmtVS = $mysqli->prepare("CALL usr_vibe_sense(?)");
+    $stmtVS->bind_param('s', $username_up);
+    $stmtVS->execute();
+    $stmtVS->bind_result($cid, $artistname, $start_time, $vname, $street, $city, $state, $zipcode);
+    while ($stmtVS->fetch()) {
+        $one_concert = array(
+                             "cid"        => $cid,
+                             "artistname" => $artistname,
+                             "start_time" => $start_time,
+                             "vname"      => $vname,
+                             "street"     => $street,
+                             "city"       => $city,
+                             "state"      => $state,
+                             "zipcode"    => $zipcode);
+        $VibeSense[] = $one_concert;
+    }
+
+    $mysqli->next_result(); 
 
 
 }
@@ -201,7 +255,7 @@ if (isset($_SESSION["username"])) {
                     <form role="form" action="add_genre.php" method="POST">
                             <div class="row">
                                 <div class="col-xs-12 col-sm-12">
-                                    <select  name="genre" class="selectpicker" data-style="btn-success" >
+                                    <select  name="genre" class="selectpicker" data-dropdown-auto="false" data-style="btn-success" >
                                         <?php 
                                             foreach ($genre_opt as $sub) {
                                                  echo "<option>".$sub."</option>";
@@ -238,7 +292,7 @@ if (isset($_SESSION["username"])) {
                                         echo "<div class=\"container-fluid\"><div class=\"row\"><div class=\"col-md-10\">";
                                         echo "<div class=\"date-and-name\">";
                                         echo "<h4><span class=\"fa fa-calendar fa-lg\"></span>   ".$con["start_time"]."</h4>";
-                                        echo "<h3><a href=artist_public.php?link=\"".$con["artistname"]."\">".$con["artistname"]."</a></h3>";
+                                        echo "<h3><a href=\"artist_public.php?link=",urlencode($con["artistname"]),"\">".$con["artistname"]."</a></h3>";
                                         echo "</div>";
                                         echo "<div class=\"location\"><h4>".$con["vname"]."</h4><p>";
                                         echo "<span class=\"addr\">";
@@ -248,7 +302,7 @@ if (isset($_SESSION["username"])) {
                                         echo "<span class=\"state\">  ".$con["state"]."</span>  ,";
                                         echo "<br>";
                                         echo "<span class=\"zipcode\">  ".$con["zipcode"]."</span>";
-                                        echo "<a href=concert_info.php?link=\"".$con["cid"]."\"><h4>Concert Details</h4></a>";
+                                        echo "<a href=concert_info.php?link=".$con["cid"]."><h4>Concert Details</h4></a>";
                                         echo "</span></p></div></div></div></div></th>";
                                     }
                                 ?>
@@ -259,7 +313,6 @@ if (isset($_SESSION["username"])) {
           </div><!--/col--> 
       </div><!--/row--> 
     <!--Plan to go  -->
-
 
     <!-- Display You Followed Recommend List -->
       <div class="row">
@@ -272,12 +325,20 @@ if (isset($_SESSION["username"])) {
                             <table class="table">
                             <!-- php loop concert -->
                                <?php
-                                    foreach ($plan_to as $con) {
+                                    $spin_cnt = 0;
+                                    foreach ($newCon as $con) {
                                         echo "<th>";
                                         echo "<div class=\"container-fluid\"><div class=\"row\"><div class=\"col-md-10\">";
                                         echo "<div class=\"date-and-name\">";
-                                        echo "<h4><span class=\"fa fa-calendar fa-lg\"></span>   ".$con["start_time"]."</h4>";
-                                        echo "<h3><a href=artist_public.php?link=\"".$con["artistname"]."\">".$con["artistname"]."</a></h3>";
+                                        echo "<h4><span class=\"fa fa-calendar fa-lg\"></span>   ".$con["start_time"];
+                                        if ($spin_cnt < $newMsg) {
+                                            echo "  <h6><em>New + </em><i class=\"fa fa-spinner fa-spin\"></i></h6>";
+                                            $spin_cnt++;
+                                        }
+                                        echo "</h4>";
+                                        echo "From Star User: <a href=\"user_public.php?link=", urlencode($star), "\">".$star."</a>";
+                                        echo "<h6>Recommend List Name: <a href=\"show_recomList.php?link=", urlencode($con["listname"]), "\">".$con["listname"]."</a></h6>";
+                                        echo "<h3><a href=\"artist_public.php?link=", urlencode($con["artistname"]), "\">".$con["artistname"]."</a></h3>";
                                         echo "</div>";
                                         echo "<div class=\"location\"><h4>".$con["vname"]."</h4><p>";
                                         echo "<span class=\"addr\">";
@@ -287,7 +348,7 @@ if (isset($_SESSION["username"])) {
                                         echo "<span class=\"state\">  ".$con["state"]."</span>  ,";
                                         echo "<br>";
                                         echo "<span class=\"zipcode\">  ".$con["zipcode"]."</span>";
-                                        echo "<a href=concert_info.php?link=\"".$con["cid"]."\"><h4>Concert Details</h4></a>";
+                                        echo "<a href=concert_info.php?link=".$con["cid"]."><h4>Concert Details</h4></a>";
                                         echo "</span></p></div></div></div></div></th>";
                                     }
                                 ?>
@@ -310,12 +371,12 @@ if (isset($_SESSION["username"])) {
                             <table class="table">
                             <!-- php loop -->
                                <?php
-                                    foreach ($plan_to as $con) {
+                                    foreach ($VibeSense as $con) {
                                         echo "<th>";
                                         echo "<div class=\"container-fluid\"><div class=\"row\"><div class=\"col-md-10\">";
                                         echo "<div class=\"date-and-name\">";
                                         echo "<h4><span class=\"fa fa-calendar fa-lg\"></span>   ".$con["start_time"]."</h4>";
-                                        echo "<h3><a href=artist_public.php?link=\"".$con["artistname"]."\">".$con["artistname"]."</a></h3>";
+                                        echo "<h3><a href=\"artist_public.php?link=", urlencode($con["artistname"]),"\">".$con["artistname"]."</a></h3>";
                                         echo "</div>";
                                         echo "<div class=\"location\"><h4>".$con["vname"]."</h4><p>";
                                         echo "<span class=\"addr\">";
@@ -325,7 +386,7 @@ if (isset($_SESSION["username"])) {
                                         echo "<span class=\"state\">  ".$con["state"]."</span>  ,";
                                         echo "<br>";
                                         echo "<span class=\"zipcode\">  ".$con["zipcode"]."</span>";
-                                        echo "<a href=concert_info.php?link=\"".$con["cid"]."\"><h4>Concert Details</h4></a>";
+                                        echo "<a href=concert_info.php?link=".$con["cid"]."><h4>Concert Details</h4></a>";
                                         echo "</span></p></div></div></div></div></th>";
                                     }
                                 ?>
