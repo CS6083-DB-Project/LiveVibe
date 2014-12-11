@@ -150,6 +150,32 @@ if (isset($_SESSION["username"])) {
 
     $mysqli->next_result(); 
 
+    // Grab ALL Venue Info
+    $venue_opt = array();
+    $stmtV = $mysqli->prepare("SELECT vid, vname, city FROM venues");
+    $stmtV->execute();
+    $stmtV->bind_result($vid, $vname, $city);
+    while ($stmtV->fetch()) {
+        $one_venue = array (
+                            "vid"   => $vid,
+                            "vname" => $vname,
+                            "city"  => $city
+                            ); 
+        $venue_opt[] = $one_venue;
+    }
+
+    $mysqli->next_result();
+
+    // Grab All Artist Info
+    $artist_opt = array();
+    $stmtA = $mysqli->prepare("SELECT artistname FROM artists");
+    $stmtA->execute();
+    $stmtA->bind_result($artistname);
+    while ($stmtA->fetch()) {
+        $artist_opt[] = $artistname;
+    }
+
+    $mysqli->next_result();
 
 }
 
@@ -397,6 +423,56 @@ if (isset($_SESSION["username"])) {
           </div><!--/col--> 
       </div><!--/row--> 
     <!--System Guess -->
+
+    <!-- If Star User: Can Post Additional Info -->
+    <?php
+    if ($_SESSION["is_star_usr"]) {
+        echo "      <div class=\"row\">\n"; 
+        echo "          <div class=\"col-md-10\">\n"; 
+        echo "            <div class=\"panel panel-default\">\n"; 
+        echo "                <div class=\"panel-body\">\n"; 
+        echo "                  <div class=\"concert-brief\">\n"; 
+        echo "                    <div class=\"panel panel-success\">\n"; 
+        echo "                        <div class=\"panel-heading text-center\"><h2><strong>Post A New Concert</strong></h2></div>\n"; 
+        echo "                        <!-- Post Form -->\n"; 
+        echo "                        <br>\n"; 
+        echo "                        <form role=\"form\" action=\"post_con.php\" method=\"POST\">\n"; 
+        echo "                            <div class=\"form-group\">\n";
+        echo "                                 Select a Artist in LiveVibe: ";
+        echo "                                <select  name=\"artistname\" class=\"selectpicker\" data-dropdown-auto=\"false\" data-style=\"btn-primary\" >\n"; 
+                                            foreach ($artist_opt as $a) {
+                                                echo "<option>".$a."</option>";
+                                            }                                                 
+        echo "                                </select>\n"; 
+        echo "                            </div>\n";
+        echo "                            <div class=\"form-group\">\n";
+        echo "                                 Concert Start Date and Time: "; 
+        echo "                                <input type=\"text\" placeholder=\"Date and Time\" name=\"date_time\"/>\n"; 
+        echo "                            </div>\n";
+        echo "                            <div class=\"form-group\">\n"; 
+        echo "                                 Extra Link for Purchase Ticket: "; 
+        echo "                            <input type=\"text\" placeholder=\"Link\" name=\"con_link\"/><br>\n";
+        echo "                            </div>\n"; 
+        echo "                            <div class=\"form-group\">\n";
+        echo "                                 Select A Venue of LiveVibe: "; 
+        echo "                                <select  name=\"venue\" class=\"selectpicker\" data-dropdown-auto=\"false\" data-style=\"btn-success\" >\n"; 
+                                            foreach ($venue_opt as $v) {
+                                                echo "<option>".$v["vid"].", ".$v["vname"].", ".$v["city"]."</option>";
+                                            }                                                 
+  
+        echo "                                </select>\n"; 
+        echo "                            </div>\n"; 
+        echo "\n"; 
+        echo "                            <button type=\"submit\" class=\"btn btn-primary pull-right\">Post</button>\n"; 
+        echo "                         </form>\n"; 
+        echo "                    </div><!-- concert-brief -->\n"; 
+        echo "                </div><!--/panel-body-->\n"; 
+        echo "            </div><!--/panel-->\n"; 
+        echo "          </div><!--/col--> \n"; 
+        echo "      </div><!--/row--> \n"; 
+        echo "    <!-- Post Con-->\n";
+    }
+    ?>
 
 </section>
 

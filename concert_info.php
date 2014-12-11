@@ -1,6 +1,9 @@
 <!-- Project: LiveVibe
 Author: Xun Gong, Wei Yu
 Date: Dec 4th, 2014 -->
+
+DETERMING IF POST METHOD -> RECORD POSTER
+
 <!DOCTYPE html>
 <html>
 	<head>

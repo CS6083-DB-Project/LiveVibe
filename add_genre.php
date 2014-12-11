@@ -19,8 +19,16 @@ if (isset($_SESSION["username"]) && isset($_POST["genre"])) {
     $stmtAG->execute();
 
     $mysqli->next_result();
-    redirect('http://localhost:8888/livevibe/user_profile.php');
-    exit();
+
+    if ($type == "user") {
+        redirect('http://localhost:8888/livevibe/user_profile.php');
+        exit();
+    }
+
+    if ($type == "artist") {
+        redirect('http://localhost:8888/livevibe/artist_profile.php');
+        exit();
+    } 
 }
 
 ?>

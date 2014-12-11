@@ -1,5 +1,5 @@
 <?php
-$mysqli = new mysqli("localhost", "root", "root", "livevibe");
+$mysqli = new mysqli("localhost", "root", "root", "livevibe_new");
 
 /* check connection */
 if (mysqli_connect_errno()) {
