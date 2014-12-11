@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Dec 11, 2014 at 09:52 AM
+-- Generation Time: Dec 11, 2014 at 07:09 PM
 -- Server version: 5.5.38
 -- PHP Version: 5.6.2
 
@@ -168,7 +168,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `upcoming_ap`(IN `aname` VARCHAR(20)
 BEGIN
     SELECT C.artistname, C.cid, C.start_time, V.vname, V.street,V.city, V.state, V.zipcode
     FROM concerts AS C JOIN venues AS V
-    ON C.artistname = aname AND C.vid = V.vid AND C.start_time < NOW()
+    ON C.artistname = aname AND C.vid = V.vid AND C.start_time > NOW()
     ORDER BY C.start_time ASC;
 END$$
 
@@ -288,7 +288,7 @@ BEGIN
   SELECT A.username, A.cid, C.artistname, C.start_time, V.vname, V.street, V.city, V.state, V.zipcode
   FROM attendance AS A JOIN concerts AS C JOIN venues AS V
   ON A.cid = C.cid AND C.vid = V.vid
-  WHERE A.username = uname AND A.rating IS NULL AND A.review IS NULL AND C.start_time > NOW()
+  WHERE A.username = uname AND C.start_time > NOW()
   ORDER BY C.start_time ASC;
 END$$
 
@@ -300,6 +300,23 @@ BEGIN
     ON U.sub = A.sub AND A.artistname = C.artistname AND C.vid = V.vid AND C.start_time > NOW()
     WHERE U.username = uname
     ORDER BY C.start_time ASC;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `who_post`(IN `cid_info` CHAR(10))
+    NO SQL
+BEGIN
+  DECLARE cnt INT;
+    SET cnt = 0;
+    
+    SELECT COUNT(*) INTO cnt FROM anew WHERE cid = cid_info;
+
+    IF cnt > 0 THEN
+        SELECT artistname as p
+        FROM anew WHERE cid = cid_info;
+    ELSE
+        SELECT username as p
+        FROM unew WHERE cid = cid_info;
+    END IF;
 END$$
 
 DELIMITER ;
@@ -315,6 +332,13 @@ CREATE TABLE `anew` (
   `cid` char(10) NOT NULL DEFAULT '',
   `new_time` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `anew`
+--
+
+INSERT INTO `anew` (`artistname`, `cid`, `new_time`) VALUES
+('Damien Rice', '5500000432', '2014-11-04 00:00:00');
 
 -- --------------------------------------------------------
 
@@ -338,7 +362,7 @@ CREATE TABLE `artists` (
 INSERT INTO `artists` (`artistname`, `artpwd`, `bio`, `reg_time`, `login_time`, `lastaccess`) VALUES
 ('Belle & Sebastian', 'abc123', 'Sounds childish.', '2010-04-22 16:44:34', '2014-11-25 13:22:48', '2014-11-23 15:23:32'),
 ('Billy Joel', 'abc123', 'Singer Billy Joel topped the charts in the 1970s and ''80s with hits like "Piano Man," "Uptown Girl" and "We Didn''t Start the Fire."', '2013-11-22 16:44:34', '2014-09-25 13:22:48', '2014-11-24 09:42:23'),
-('Bob Dylan', 'abc123', 'For almost 50 years, Bob Dylan has remained, along with James Brown, the most influential American musician rock & roll has ever produced.', '2011-05-22 16:44:34', '2014-12-11 03:50:54', '2014-12-11 03:51:18'),
+('Bob Dylan', 'abc123', 'For almost 50 years, Bob Dylan has remained, along with James Brown, the most influential American musician rock & roll has ever produced.', '2011-05-22 16:44:34', '2014-12-11 03:50:54', '2014-12-11 04:06:36'),
 ('Damien Rice', 'abc123', 'Sounds good.', '2010-04-22 16:44:34', '2014-11-15 13:22:48', '2014-11-25 16:32:54'),
 ('Interpol', 'abc123', 'Sounds gay.', '2009-06-22 02:36:12', '2014-08-25 13:22:48', '2014-11-25 10:23:32'),
 ('Justin Timberlake', 'abc123', 'Sounds girly.', '2009-04-22 16:44:34', '2014-04-25 13:22:48', '2014-11-22 17:14:24'),
@@ -366,10 +390,11 @@ CREATE TABLE `attendance` (
 --
 
 INSERT INTO `attendance` (`username`, `cid`, `rating`, `review`, `rv_time`) VALUES
+('johndoe', '5500000432', 6, 'Not bad.', '2014-12-02 13:00:00'),
 ('johndoe', '5500000513', NULL, NULL, NULL),
 ('johndoe', '5500000634', NULL, NULL, NULL),
-('johndoe', '5500000791', NULL, NULL, NULL),
-('johndoe', '5500000953', 8, 'Review: A SPECIAL Guest came to concert last night!', '2014-01-26 10:33:35'),
+('johndoe', '5500000791', 5, NULL, NULL),
+('johndoe', '5500000953', 8, 'I just updated my review. Check this out.', '2014-12-11 13:03:12'),
 ('mchotdog', '5500000189', NULL, NULL, NULL),
 ('mchotdog', '5500000231', NULL, NULL, NULL),
 ('mchotdog', '5500000432', 8, 'Review: My girlfriend got crazy last night.', '2014-11-25 13:34:14'),
@@ -453,11 +478,11 @@ CREATE TABLE `fans` (
 --
 
 INSERT INTO `fans` (`username`, `artistname`, `fan_time`) VALUES
-('johndoe', 'Linkin Park', NULL),
-('johndoe', 'OneRepublic', NULL),
+('johndoe', 'Linkin Park', '2012-11-11 00:00:00'),
+('johndoe', 'OneRepublic', '2014-08-11 00:00:00'),
 ('magicmike', 'Bob Dylan', '2014-12-01 00:00:00'),
-('mchotdog', 'Bob Dylan', NULL),
-('mchotdog', 'Linkin Park', NULL),
+('mchotdog', 'Bob Dylan', '2014-12-01 00:00:00'),
+('mchotdog', 'Linkin Park', '2013-01-11 10:26:00'),
 ('test_user', 'Bob Dylan', '2014-12-02 00:00:00');
 
 -- --------------------------------------------------------
@@ -529,7 +554,7 @@ CREATE TABLE `recommend` (
 INSERT INTO `recommend` (`username`, `cid`, `listname`, `rm_time`) VALUES
 ('mchotdog', '5500000189', 'Where to go this winter', '2014-11-25 15:12:13'),
 ('mchotdog', '5500000231', '2015 Must', '2014-12-10 07:26:38'),
-('mchotdog', '5500000343', 'Where to go this winter', '2014-12-10 23:10:00'),
+('mchotdog', '5500000343', 'Where to go this winter', '2014-12-11 23:10:00'),
 ('mchotdog', '5500000432', 'Where to go this winter', '2014-11-25 15:12:13'),
 ('mchotdog', '5500000513', 'Where to go this winter', '2014-11-25 15:12:13'),
 ('mchotdog', '5500000634', '2015 Must', '2014-12-01 06:33:25');
@@ -543,8 +568,21 @@ INSERT INTO `recommend` (`username`, `cid`, `listname`, `rm_time`) VALUES
 CREATE TABLE `ucomments` (
   `username` varchar(20) NOT NULL DEFAULT '',
   `cid` char(10) NOT NULL DEFAULT '',
+  `content` varchar(40) DEFAULT NULL,
   `c_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `ucomments`
+--
+
+INSERT INTO `ucomments` (`username`, `cid`, `content`, `c_time`) VALUES
+('johndoe', '5500000791', 'This is sofa!', '2014-12-11 11:06:20'),
+('johndoe', '5500000953', 'I would like to leave a short msg.', '2014-12-11 12:57:21'),
+('magicmike', '5500009876', 'Yo. Any one here?', '2014-12-02 08:22:25'),
+('mchotdog', '5500000513', 'Go for lunch now~', '2014-12-11 13:08:41'),
+('mchotdog', '5500009876', 'I have 2 VIP tickets.', '2014-11-04 13:25:24'),
+('test_user', '5500009876', 'Just back in town. How about this one?', '2014-12-01 08:31:31');
 
 -- --------------------------------------------------------
 
@@ -557,6 +595,13 @@ CREATE TABLE `unew` (
   `cid` char(10) NOT NULL DEFAULT '',
   `new_time` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `unew`
+--
+
+INSERT INTO `unew` (`username`, `cid`, `new_time`) VALUES
+('mchotdog', '5500000231', '2014-10-13 08:24:25');
 
 -- --------------------------------------------------------
 
@@ -602,10 +647,10 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`username`, `userpwd`, `reg_time`, `login_time`, `lastaccess`) VALUES
-('johndoe', 'abc123', '2011-05-12 13:44:34', '2014-12-11 03:49:59', '2014-12-11 03:49:59'),
+('johndoe', 'abc123', '2011-05-12 13:44:34', '2014-12-11 12:42:43', '2014-12-11 13:04:18'),
 ('magicmike', 'abc123', '2014-01-04 12:34:34', '2014-11-23 13:22:48', '2014-11-25 16:42:53'),
-('mchotdog', 'abc123', '2008-09-23 23:44:34', '2014-12-11 03:50:44', '2014-12-11 03:50:44'),
-('test_user', 'abc123', '2014-12-08 09:45:37', '2014-12-10 19:22:45', '2014-12-10 20:13:28');
+('mchotdog', 'abc123', '2008-09-23 23:44:34', '2014-12-11 13:04:53', '2014-12-11 13:08:18'),
+('test_user', 'abc123', '2014-12-08 09:45:37', '2014-12-11 04:16:04', '2014-12-11 04:17:07');
 
 -- --------------------------------------------------------
 
