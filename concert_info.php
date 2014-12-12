@@ -9,6 +9,7 @@ require ("connectdb.php");
 if (isset($_SESSION["username"])) {
     // Set local var
     $username = $_SESSION["username"];
+    $type = $_SESSION["login_type"];
     $cid_info = $_GET["link"];
     $_SESSION["go_to_cid"] = $cid_info; // session var for later use
 
@@ -37,6 +38,7 @@ if (isset($_SESSION["username"])) {
                              "state"      => $state,
                              "zipcode"    => $zipcode);
     }
+
 
     $mysqli->next_result();
 
@@ -136,8 +138,8 @@ if (isset($_SESSION["username"])) {
 	                        <ul class="nav navbar-nav navbar-right">                 
 	                            <li class="scroll"><a href="index.php">Home</a></li>
 	                            <li class="scroll"><a href="#">Trend</a></li>
-	                            <li class="scroll"><a href="#">Genre</a></li>
-	                            <li class="scroll"><a href="#">About</a></li>
+	                            <li class="scroll"><a href="all_genre.php">Genre</a></li>
+	                            <li class="scroll"><a href="search.php">Search</a></li>
 	                            <li class="scroll"><a href="logout.php">Log out</a></li> 
 	                        </ul>
 	                    </div>
@@ -278,7 +280,7 @@ if (isset($_SESSION["username"])) {
           height: 80px;
           margin-bottom: 20px;
           position: relative;
-          width: 768px;
+          width: 613px;
           opacity: .95
         }
 

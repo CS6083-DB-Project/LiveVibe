@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Dec 11, 2014 at 07:09 PM
+-- Generation Time: Dec 12, 2014 at 05:13 AM
 -- Server version: 5.5.38
 -- PHP Version: 5.6.2
 
@@ -362,7 +362,7 @@ CREATE TABLE `artists` (
 INSERT INTO `artists` (`artistname`, `artpwd`, `bio`, `reg_time`, `login_time`, `lastaccess`) VALUES
 ('Belle & Sebastian', 'abc123', 'Sounds childish.', '2010-04-22 16:44:34', '2014-11-25 13:22:48', '2014-11-23 15:23:32'),
 ('Billy Joel', 'abc123', 'Singer Billy Joel topped the charts in the 1970s and ''80s with hits like "Piano Man," "Uptown Girl" and "We Didn''t Start the Fire."', '2013-11-22 16:44:34', '2014-09-25 13:22:48', '2014-11-24 09:42:23'),
-('Bob Dylan', 'abc123', 'For almost 50 years, Bob Dylan has remained, along with James Brown, the most influential American musician rock & roll has ever produced.', '2011-05-22 16:44:34', '2014-12-11 03:50:54', '2014-12-11 04:06:36'),
+('Bob Dylan', 'abc123', 'For almost 50 years, Bob Dylan has remained, along with James Brown, the most influential American musician rock & roll has ever produced.', '2011-05-22 16:44:34', '2014-12-11 22:34:59', '2014-12-11 22:36:13'),
 ('Damien Rice', 'abc123', 'Sounds good.', '2010-04-22 16:44:34', '2014-11-15 13:22:48', '2014-11-25 16:32:54'),
 ('Interpol', 'abc123', 'Sounds gay.', '2009-06-22 02:36:12', '2014-08-25 13:22:48', '2014-11-25 10:23:32'),
 ('Justin Timberlake', 'abc123', 'Sounds girly.', '2009-04-22 16:44:34', '2014-04-25 13:22:48', '2014-11-22 17:14:24'),
@@ -424,7 +424,7 @@ INSERT INTO `a_sub` (`artistname`, `sub`) VALUES
 ('Maroon 5', 'Indie rock'),
 ('OneRepublic', 'Indie rock'),
 ('Damien Rice', 'New School Hip-Hop'),
-('Justin Timberlake', 'New School Hip-Hop'),
+('Justin Timberlake', 'Old School Hip-Hop'),
 ('Snapline', 'Old School Hip-Hop'),
 ('Bob Dylan', 'Pop rock'),
 ('Justin Timberlake', 'Pop rock'),
@@ -459,7 +459,8 @@ INSERT INTO `concerts` (`cid`, `vid`, `artistname`, `start_time`, `link`) VALUES
 ('5500000791', '8800000111', 'Billy Joel', '2014-12-14 20:00:00', 'http://www.bandsintown.com'),
 ('5500000945', '8800000843', 'Interpol', '2014-11-28 20:00:00', 'http://www.bandsintown.com'),
 ('5500000953', '8800000111', 'Justin Timberlake', '2014-01-25 19:00:00', 'http://www.bandsintown.com'),
-('5500009876', '8800000765', 'Bob Dylan', '2014-11-10 19:00:00', 'http://www.rollingstone.com/');
+('5500009876', '8800000765', 'Bob Dylan', '2014-11-10 19:00:00', 'http://www.rollingstone.com/'),
+('5500109291', '8800000999', 'Maroon 5', '2015-02-03 19:30:00', 'http://www.maroon5.com/v');
 
 -- --------------------------------------------------------
 
@@ -556,6 +557,7 @@ INSERT INTO `recommend` (`username`, `cid`, `listname`, `rm_time`) VALUES
 ('mchotdog', '5500000231', '2015 Must', '2014-12-10 07:26:38'),
 ('mchotdog', '5500000343', 'Where to go this winter', '2014-12-11 23:10:00'),
 ('mchotdog', '5500000432', 'Where to go this winter', '2014-11-25 15:12:13'),
+('mchotdog', '5500000513', 'Test Listname', '2014-12-11 18:47:35'),
 ('mchotdog', '5500000513', 'Where to go this winter', '2014-11-25 15:12:13'),
 ('mchotdog', '5500000634', '2015 Must', '2014-12-01 06:33:25');
 
@@ -577,11 +579,15 @@ CREATE TABLE `ucomments` (
 --
 
 INSERT INTO `ucomments` (`username`, `cid`, `content`, `c_time`) VALUES
+('johndoe', '5500000634', 'Anyone knows the parking rate of Beacon ', '2014-12-11 14:52:26'),
 ('johndoe', '5500000791', 'This is sofa!', '2014-12-11 11:06:20'),
 ('johndoe', '5500000953', 'I would like to leave a short msg.', '2014-12-11 12:57:21'),
+('johndoe', '5500109291', 'Finally Done. Leave A message.', '2014-12-11 23:13:27'),
 ('magicmike', '5500009876', 'Yo. Any one here?', '2014-12-02 08:22:25'),
+('mchotdog', '5500000231', 'Can''t wait to this concert!', '2014-12-11 18:11:31'),
 ('mchotdog', '5500000513', 'Go for lunch now~', '2014-12-11 13:08:41'),
 ('mchotdog', '5500009876', 'I have 2 VIP tickets.', '2014-11-04 13:25:24'),
+('test_user', '5500000343', 'Actually, I''m not a big fan of LP...', '2014-12-11 14:53:46'),
 ('test_user', '5500009876', 'Just back in town. How about this one?', '2014-12-01 08:31:31');
 
 -- --------------------------------------------------------
@@ -601,7 +607,8 @@ CREATE TABLE `unew` (
 --
 
 INSERT INTO `unew` (`username`, `cid`, `new_time`) VALUES
-('mchotdog', '5500000231', '2014-10-13 08:24:25');
+('mchotdog', '5500000231', '2014-10-13 08:24:25'),
+('mchotdog', '5500109291', '2014-12-11 19:42:12');
 
 -- --------------------------------------------------------
 
@@ -647,10 +654,10 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`username`, `userpwd`, `reg_time`, `login_time`, `lastaccess`) VALUES
-('johndoe', 'abc123', '2011-05-12 13:44:34', '2014-12-11 12:42:43', '2014-12-11 13:04:18'),
+('johndoe', 'abc123', '2011-05-12 13:44:34', '2014-12-11 23:10:01', '2014-12-11 23:13:30'),
 ('magicmike', 'abc123', '2014-01-04 12:34:34', '2014-11-23 13:22:48', '2014-11-25 16:42:53'),
-('mchotdog', 'abc123', '2008-09-23 23:44:34', '2014-12-11 13:04:53', '2014-12-11 13:08:18'),
-('test_user', 'abc123', '2014-12-08 09:45:37', '2014-12-11 04:16:04', '2014-12-11 04:17:07');
+('mchotdog', 'abc123', '2008-09-23 23:44:34', '2014-12-11 20:42:09', '2014-12-11 20:42:09'),
+('test_user', 'abc123', '2014-12-08 09:45:37', '2014-12-11 22:36:24', '2014-12-11 22:37:03');
 
 -- --------------------------------------------------------
 

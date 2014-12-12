@@ -57,8 +57,8 @@ if (isset($_SESSION["username"])) {
                         <ul class="nav navbar-nav navbar-right">                 
                             <li class="scroll"><a href="#home">Home</a></li>
                             <li class="scroll"><a href="#trend">Trend</a></li>
-                            <li class="scroll"><a href="#genre">Genre</a></li>
-                            <li class="scroll"><a href="#about">About</a></li>
+                            <li class="scroll"><a href="all_genre.php">Genre</a></li>
+                            <li class="scroll"><a href="search.php">Search</a></li>
                             <li class="scroll"><a href="register.php">Register</a></li>
                             <li class="dropdown">
                                 <a class="dropdown-toggle" href="#" data-toggle="dropdown">Log In <strong class="caret"></strong></a>
@@ -225,7 +225,7 @@ if (isset($_SESSION["username"])) {
       height: 80px;
       margin-bottom: 20px;
       position: relative;
-      width: 481px;
+      width: 469px;
       opacity: .95
     }
     </style>

@@ -24,6 +24,12 @@ if (isset($_SESSION["username"])) {
     $stmtLAT->execute();
     $mysqli->next_result();
 
+    // Check If artist self Login
+    if ($username == $artistname) {
+        redirect("http://localhost:8888/livevibe/artist_profile.php");
+        exit();
+    }
+
     // Grab artist data to perform
     // Execute query
     $stmtAinfo = $mysqli->prepare("SELECT bio FROM artists WHERE artistname = ?");
@@ -161,8 +167,8 @@ if (isset($_SESSION["username"])) {
                         <ul class="nav navbar-nav navbar-right">                 
                             <li class="scroll"><a href="index.php">Home</a></li>
                             <li class="scroll"><a href="#">Trend</a></li>
-                            <li class="scroll"><a href="#">Genre</a></li>
-                            <li class="scroll"><a href="#">About</a></li>
+                            <li class="scroll"><a href="all_genre.php">Genre</a></li>
+                            <li class="scroll"><a href="search.php">Search</a></li>
                             <li class="scroll"><a href="logout.php">Log out</a></li> 
                         </ul>
                     </div>
@@ -276,7 +282,7 @@ if (isset($_SESSION["username"])) {
                 <div class="panel-body">
                   <div class="concert-brief">
                     <div class="panel panel-info">
-                        <div class="panel-heading text-center"><h2><strong>All<?php echo $artistname;?>Concerts</strong></h2></div>
+                        <div class="panel-heading text-center"><h2><strong>All<?php echo "  ".$artistname."  ";?>Concerts</strong></h2></div>
                             <table class="table">
                             <!-- php loop concert -->
                                 <?php
@@ -335,7 +341,7 @@ if (isset($_SESSION["username"])) {
               height: 80px;
               margin-bottom: 20px;
               position: relative;
-              width: 640px;
+              width: 628px;
               opacity: .95
             }
             .panel  {

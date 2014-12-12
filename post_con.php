@@ -7,7 +7,7 @@ Date: Dec 4th, 2014 -->
 // Session start in connectdb.php file
 require ("connectdb.php");
 
-if ($_SERVER['REQUEST_METHOD'] == "POST") {
+if ($_SERVER['REQUEST_METHOD'] == "POST" && !empty($_POST["date_time"]) && !empty($_POST["con_link"]) && isset($_POST["venue"])) {
     $poster = $_SESSION["username"];
     $type = $_SESSION["login_type"];
     $date_time = $_POST["date_time"];
@@ -42,6 +42,12 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         redirect("http://localhost:8888/livevibe/user_profile.php");
         exit();
     }
+}
+else {
+    echo "<script>alert(\"Post Form Not Fully Filled!\")</script>";
+    $url = "http://localhost:8888/livevibe/index.php";
+    redirect($url);
+    exit();
 }
 
 ?>

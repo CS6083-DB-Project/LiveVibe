@@ -177,6 +177,22 @@ if (isset($_SESSION["username"])) {
 
     $mysqli->next_result();
 
+    // Grab All Concert Info
+    $concert_op = array();
+    $stmtCP = $mysqli->prepare("SELECT C.cid, C.artistname, C.start_time, V.city FROM concerts AS C JOIN venues AS V ON C.vid = V.vid AND C.start_time > NOW() ORDER BY C.start_time ASC");
+    $stmtCP->execute();
+    $stmtCP->bind_result($cid, $artistname, $start_time, $city);
+    while ($stmtCP->fetch()) {
+        $one_concert = array(
+                            "cid" => $cid,
+                            "artistname" => $artistname,
+                            "start_time" => $start_time,
+                            "city" => $city
+                            );
+        $concert_op[] = $one_concert;
+    }
+
+    $mysqli->next_result();
 }
 
 
@@ -221,8 +237,8 @@ if (isset($_SESSION["username"])) {
                         <ul class="nav navbar-nav navbar-right">                 
                             <li class="scroll"><a href="index.php">Home</a></li>
                             <li class="scroll"><a href="#">Trend</a></li>
-                            <li class="scroll"><a href="#">Genre</a></li>
-                            <li class="scroll"><a href="#">About</a></li>
+                            <li class="scroll"><a href="all_genre.php">Genre</a></li>
+                            <li class="scroll"><a href="search.php">Search</a></li>
                             <li class="scroll"><a href="logout.php">Log out</a></li> 
                         </ul>
                     </div>
@@ -471,6 +487,41 @@ if (isset($_SESSION["username"])) {
         echo "          </div><!--/col--> \n"; 
         echo "      </div><!--/row--> \n"; 
         echo "    <!-- Post Con-->\n";
+
+        // =======================
+        // Can Make Recommand List
+        // =======================
+        echo "      <div class=\"row\">\n"; 
+        echo "          <div class=\"col-md-10\">\n"; 
+        echo "            <div class=\"panel panel-default\">\n"; 
+        echo "                <div class=\"panel-body\">\n"; 
+        echo "                  <div class=\"concert-brief\">\n"; 
+        echo "                    <div class=\"panel panel-success\">\n"; 
+        echo "                        <div class=\"panel-heading text-center\"><h2><strong>Make a Recommend List</strong></h2></div>\n"; 
+        echo "                        <!-- Make RL Form -->\n"; 
+        echo "                        <br>\n"; 
+        echo "                        <form role=\"form\" action=\"make_recommend.php\" method=\"POST\">\n"; 
+        echo "                            <div class=\"form-group\">\n";
+        echo "                                 Recommendation List Name: "; 
+        echo "                                <input type=\"text\" placeholder=\"List name\" name=\"listname\"/>\n"; 
+        echo "                            </div>\n";
+        echo "                            <div class=\"form-group\">\n";
+        echo "                                 Pick a Concert: "; 
+        echo "                                <select  name=\"concerts\" class=\"selectpicker\" data-dropdown-auto=\"false\" data-style=\"btn-primary\" >\n"; 
+                                            foreach ($concert_op as $c) {
+                                                echo "<option>".$c["cid"].", ".$c["artistname"].", ".$c["start_time"].", ".$c["city"]."</option>";
+                                            }                                                 
+        echo "                                </select>\n"; 
+        echo "                            </div>\n"; 
+        echo "\n"; 
+        echo "                            <button type=\"submit\" class=\"btn btn-primary pull-right\">Add</button>\n"; 
+        echo "                         </form>\n"; 
+        echo "                    </div><!-- concert-brief -->\n"; 
+        echo "                </div><!--/panel-body-->\n"; 
+        echo "            </div><!--/panel-->\n"; 
+        echo "          </div><!--/col--> \n"; 
+        echo "      </div><!--/row--> \n"; 
+        echo "    <!-- Post Con-->\n";
     }
     ?>
 
@@ -503,7 +554,7 @@ if (isset($_SESSION["username"])) {
               height: 80px;
               margin-bottom: 20px;
               position: relative;
-              width: 640px;
+              width: 628px;
               opacity: .95
             }
             .panel  {

@@ -175,8 +175,8 @@ if (isset($_SESSION["username"])) {
                         <ul class="nav navbar-nav navbar-right">                 
                             <li class="scroll"><a href="index.php">Home</a></li>
                             <li class="scroll"><a href="#">Trend</a></li>
-                            <li class="scroll"><a href="#">Genre</a></li>
-                            <li class="scroll"><a href="#">About</a></li>
+                            <li class="scroll"><a href="all_genre.php">Genre</a></li>
+                            <li class="scroll"><a href="search.php">Search</a></li>
                             <li class="scroll"><a href="logout.php">Log out</a></li> 
                         </ul>
                     </div>
@@ -390,7 +390,7 @@ if (isset($_SESSION["username"])) {
               height: 80px;
               margin-bottom: 20px;
               position: relative;
-              width: 640px;
+              width: 628px;
               opacity: .95
             }
             .panel  {

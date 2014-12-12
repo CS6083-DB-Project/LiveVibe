@@ -1,3 +1,4 @@
+
 <!-- Project: LiveVibe
 Author: Xun Gong, Wei Yu
 Date: Dec 4th, 2014 -->
@@ -8,46 +9,64 @@ require ("connectdb.php");
 
 if (isset($_SESSION["username"])) {
     // Set local var
-    $username_up = $_SESSION["username"];
-    $login_type = $_SESSION["login_type"];
-    $listname_IN = $_GET["link"];
-    
-    // Update lastaccesstime when page load
+    $username = $_SESSION["username"];
+    $sub_in = $_GET["link"];
+
+    // // Update lastaccesstime when page load
     $stmtLAT = $mysqli->prepare("CALL update_LAT(?,?,?)");
     $LAT = date("Y-m-d H:i:s");
-    $stmtLAT->bind_param('sss', $username_up, $LAT, $login_type);
+    $stmtLAT->bind_param('sss', $username, $LAT, $login_type);
     $stmtLAT->execute();
     $mysqli->next_result();
 
-    // Grab All Concert from Recommend List User Just Clicked
-    $recomList = array();
-    $stmtRL = $mysqli->prepare("CALL show_recomList(?)");
-    $stmtRL->bind_param('s', $listname_IN);
-    $stmtRL->execute();
-    $stmtRL->bind_result($username, $cid, $rm_time, $artistname, $start_time, $vname, $city);
-    while ($stmtRL->fetch()) {
-        $one_concert = array("username"   => $username,
+    // Grab All Related Artists
+    $stmtGArtist = $mysqli->prepare("SELECT artistname FROM a_sub WHERE sub = ? ORDER BY artistname ASC");
+    $stmtGArtist->bind_param("s", $sub_in);
+    $stmtGArtist->execute();
+    $stmtGArtist->bind_result($artistname);
+
+    $artists = array();
+    while ($stmtGArtist->fetch()) {
+        $artists[] = $artistname;
+    }
+    $mysqli->next_result();
+
+
+    // Grab All Related Concert Info.
+    $stmtConInfo = $mysqli->prepare("SELECT C.cid, C.artistname, C.start_time,
+                                            V.vname, V.street, V.city, V.state, V.zipcode
+                                     FROM a_sub AS G JOIN artists AS A JOIN concerts AS C JOIN venues AS V
+                                     ON G.artistname = A.artistname AND C.artistname = A.artistname AND C.vid = V.vid
+                                     WHERE G.sub = ?
+                                     ORDER BY C.start_time ASC");
+    $stmtConInfo->bind_param("s", $sub_in);
+    $stmtConInfo->execute();
+    $stmtConInfo->bind_result($cid, $artistname, $start_time, $vname, $street, $city, $state, $zipcode);
+    
+    $AllCon = array();
+    while ($stmtConInfo->fetch()) {
+        $con_info = array(
                              "cid"        => $cid,
-                             "rm_time"    => $rm_time,
                              "artistname" => $artistname,
                              "start_time" => $start_time,
                              "vname"      => $vname,
+                             "street"     => $street,
                              "city"       => $city,
-                             );
-        $recomList[] = $one_concert;
+                             "state"      => $state,
+                             "zipcode"    => $zipcode);
+        $AllCon[] = $con_info;
     }
 
     $mysqli->next_result();
-    
-
 
 }
-
-
-
+else {
+    echo "<script>alert(\"Please Log in!\")</script>";
+    redirect("http://localhost:8888/livevibe/index.php");
+    exit();
+}
 
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -97,58 +116,24 @@ if (isset($_SESSION["username"])) {
     <!--/#header--> 
 <section id="user_panel">
 
-    <!-- Recommendation List Page -->
-     <!-- Display Recommend List He Made-->
+
+    <!-- Display All Artist of Certain Genre-->
       <div class="row">
           <div class="col-md-10">
             <div class="panel panel-default">
                 <div class="panel-body">
                   <div class="concert-brief">
-                    <div class="panel panel-info">
-                        <div class="panel-heading text-center">
-                            <h2>
-                            <?php echo "<strong>".$listname_IN."</strong>";?>
-                            </h2>
-                        </div>
-                            <table class="table" class="text-center">
-                                <tr>
-                                   <th>
-                                       <h2>Date Time</h2>
-                                   </th>
-                                   <th>
-                                       <h2>Performer</h2>
-                                   </th>
-                                   <th>
-                                       <h2>Venue</h2>
-                                   </th> 
-                                    <th>
-                                       <h2>Added Time</h2>
-                                   </th>
-                                    <th>
-                                       <h2>By</h2>
-                                   </th>
-                                </tr>
-                            <!-- php loop concert -->
+                    <div class="panel panel-primary">
+                        <div class="panel-heading text-center"><h2><strong>Popular Artist in <?php echo $sub_in;?></strong></h2></div>
+                            <table class="table">
+                            <!-- php loop to show all plan to concert -->
                                <?php
-                                    foreach ($recomList as $con) {
-                                        echo "<tr>";
+                                    foreach ($artists as $a) {
+                                        echo "<tr class=\"pull-left\">";
+                                        echo "<td>";
                                         echo "<div class=\"container-fluid\"><div class=\"row\"><div class=\"col-md-10\">";
-                                        echo "<td>";
-                                        echo "<h4><span class=\"fa fa-calendar fa-lg\"></span>   ".$con["start_time"]."</h4>";
-                                        echo "</td>";
-                                        echo "<td>";
-                                        echo "<h4><a href=\"artist_public.php?link=", urlencode($con["artistname"]), "\">".$con["artistname"]."</a></h4>";
-                                        echo "</td>";
-                                        echo "<td>";
-                                        echo "<div class=\"location\"><h4>".$con["vname"]."</h4><p>";
-                                        echo "<span class=\"addr\">";
-                                        echo "<span class=\"city\">  ".$con["city"]."</span>";
-                                        echo "<a href=concert_info.php?link=".$con["cid"]."><h4>Concert Details</h4></a>";
-                                        echo "</span></p></div></td>";
-                                        echo "<td><h4>".$con["start_time"]."</h4></td>";
-                                        echo "<td><a href=\"user_public.php?link=", urlencode($con["username"]), "\">".$con["username"]."</a>";
-                                        echo "</td>";
-                                        echo "</div></div></div></tr>";
+                                        echo "<a href=\"artist_public.php?link=", urlencode($a), "\">".$a."</a>";
+                                        echo "</div></div></div></td></tr>";
                                         echo "<br>";
                                     }
                                 ?>
@@ -158,7 +143,46 @@ if (isset($_SESSION["username"])) {
             </div><!--/panel-->
           </div><!--/col--> 
       </div><!--/row--> 
-    <!-- SHOW Recommend List  -->
+    <!--Related Artist -->
+
+    <!-- Display All Concert -->
+      <div class="row">
+          <div class="col-md-10">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                  <div class="concert-brief">
+                    <div class="panel panel-info">
+                        <div class="panel-heading text-center"><h2><strong>All Related Concerts</strong></h2></div>
+                            <table class="table">
+                            <!-- php loop concert -->
+                                <?php
+                                    foreach ($AllCon as $con) {
+                                        echo "<th>";
+                                        echo "<div class=\"container-fluid\"><div class=\"row\"><div class=\"col-md-10\">";
+                                        echo "<div class=\"date-and-name\">";
+                                        echo "<h4><span class=\"fa fa-calendar fa-lg\"></span>   ".$con["start_time"]."</h4>";
+                                        echo "</div>";
+                                        echo "<div class=\"location\"><h4>".$con["vname"]."</h4><p>";
+                                        echo "<span class=\"addr\">";
+                                        echo "<span class=\"street\">  ".$con["street"]."</span>";
+                                        echo "<br>";
+                                        echo "<span class=\"city\">  ".$con["city"]."</span>  ,";
+                                        echo "<span class=\"state\">  ".$con["state"]."</span>  ,";
+                                        echo "<br>";
+                                        echo "<span class=\"zipcode\">  ".$con["zipcode"]."</span>";
+                                        echo "<a href=concert_info.php?link=".$con["cid"]."><h4>Concert Details</h4></a>";
+                                        echo "</span></p></div></div></div></div></th>";
+                                    }
+                                ?>
+                            </table><!-- table -->
+                    </div><!-- concert-brief -->
+                </div><!--/panel-body-->
+            </div><!--/panel-->
+          </div><!--/col--> 
+      </div><!--/row--> 
+    <!-- Show All Concerts -->
+
+</section>
 
 </section>
         <style>
@@ -213,7 +237,7 @@ if (isset($_SESSION["username"])) {
             }
 
             .table {
-                font-size: 14px;
+                font-size: 20px;
             }
         </style>
 </section>

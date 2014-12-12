@@ -4,49 +4,49 @@ Date: Dec 4th, 2014 -->
 
 <!-- PHP and manipulate with livevibe database -->
 <?php
+// Session start in connectdb.php file
 require ("connectdb.php");
 
-if (isset($_SESSION["username"])) {
-    // Set local var
-    $username_up = $_SESSION["username"];
-    $login_type = $_SESSION["login_type"];
-    $listname_IN = $_GET["link"];
-    
-    // Update lastaccesstime when page load
-    $stmtLAT = $mysqli->prepare("CALL update_LAT(?,?,?)");
-    $LAT = date("Y-m-d H:i:s");
-    $stmtLAT->bind_param('sss', $username_up, $LAT, $login_type);
-    $stmtLAT->execute();
-    $mysqli->next_result();
+if (isset($_SESSION["username"]) && !empty($_POST["start_date"]) && !empty($_POST["end_date"])) {
 
-    // Grab All Concert from Recommend List User Just Clicked
-    $recomList = array();
-    $stmtRL = $mysqli->prepare("CALL show_recomList(?)");
-    $stmtRL->bind_param('s', $listname_IN);
-    $stmtRL->execute();
-    $stmtRL->bind_result($username, $cid, $rm_time, $artistname, $start_time, $vname, $city);
-    while ($stmtRL->fetch()) {
-        $one_concert = array("username"   => $username,
-                             "cid"        => $cid,
-                             "rm_time"    => $rm_time,
-                             "artistname" => $artistname,
-                             "start_time" => $start_time,
-                             "vname"      => $vname,
-                             "city"       => $city,
-                             );
-        $recomList[] = $one_concert;
+    $start_date = $_POST["start_date"];
+    $end_date = $_POST["end_date"];
+    $concerts = array();
+
+    $stmtTime = $mysqli->prepare("SELECT C.cid, C.artistname, C.start_time,
+                                            V.vname, V.street, V.city, V.state, V.zipcode
+                                     FROM concerts AS C JOIN venues AS V
+                                     ON C.vid = V.vid AND C.start_time >= ? AND C.start_time <= ?
+                                     ORDER BY C.start_time ASC");
+    
+    $stmtTime->bind_param("ss", $start_date, $end_date);
+    $stmtTime->execute();
+    $stmtTime->bind_result($cid, $artistname, $start_time, $vname, $street, $city, $state, $zipcode);
+
+    while ($stmtTime->fetch()) {
+            $one_concert = array(
+                                 "cid"        => $cid,
+                                 "artistname" => $artistname,
+                                 "start_time" => $start_time,
+                                 "vname"      => $vname,
+                                 "street"     => $street,
+                                 "city"       => $city,
+                                 "state"      => $state,
+                                 "zipcode"    => $zipcode);
+            $concerts[] = $one_concert;
     }
 
     $mysqli->next_result();
-    
-
 
 }
-
-
-
+else {
+            echo "<script>alert(\"Empty Input!\")</script>";
+            redirect("http://localhost:8888/livevibe/search.php");
+            exit();
+}
 
 ?>
+
 
 
 <!DOCTYPE html>
@@ -97,59 +97,34 @@ if (isset($_SESSION["username"])) {
     <!--/#header--> 
 <section id="user_panel">
 
-    <!-- Recommendation List Page -->
-     <!-- Display Recommend List He Made-->
+    <!-- Display Plan to Go -->
       <div class="row">
           <div class="col-md-10">
             <div class="panel panel-default">
                 <div class="panel-body">
                   <div class="concert-brief">
-                    <div class="panel panel-info">
-                        <div class="panel-heading text-center">
-                            <h2>
-                            <?php echo "<strong>".$listname_IN."</strong>";?>
-                            </h2>
-                        </div>
-                            <table class="table" class="text-center">
-                                <tr>
-                                   <th>
-                                       <h2>Date Time</h2>
-                                   </th>
-                                   <th>
-                                       <h2>Performer</h2>
-                                   </th>
-                                   <th>
-                                       <h2>Venue</h2>
-                                   </th> 
-                                    <th>
-                                       <h2>Added Time</h2>
-                                   </th>
-                                    <th>
-                                       <h2>By</h2>
-                                   </th>
-                                </tr>
-                            <!-- php loop concert -->
+                    <div class="panel panel-primary">
+                        <div class="panel-heading text-center"><h2><strong>Concerts Based on Your Selected Timeslot</strong></h2></div>
+                            <table class="table">
+                            <!-- php loop to show all plan to concert -->
                                <?php
-                                    foreach ($recomList as $con) {
+                                    foreach ($concerts as $con) {
                                         echo "<tr>";
                                         echo "<div class=\"container-fluid\"><div class=\"row\"><div class=\"col-md-10\">";
-                                        echo "<td>";
+                                        echo "<div class=\"date-and-name\">";
                                         echo "<h4><span class=\"fa fa-calendar fa-lg\"></span>   ".$con["start_time"]."</h4>";
-                                        echo "</td>";
-                                        echo "<td>";
-                                        echo "<h4><a href=\"artist_public.php?link=", urlencode($con["artistname"]), "\">".$con["artistname"]."</a></h4>";
-                                        echo "</td>";
-                                        echo "<td>";
+                                        echo "<h3><a href=\"artist_public.php?link=",urlencode($con["artistname"]),"\">".$con["artistname"]."</a></h3>";
+                                        echo "</div>";
                                         echo "<div class=\"location\"><h4>".$con["vname"]."</h4><p>";
                                         echo "<span class=\"addr\">";
-                                        echo "<span class=\"city\">  ".$con["city"]."</span>";
-                                        echo "<a href=concert_info.php?link=".$con["cid"]."><h4>Concert Details</h4></a>";
-                                        echo "</span></p></div></td>";
-                                        echo "<td><h4>".$con["start_time"]."</h4></td>";
-                                        echo "<td><a href=\"user_public.php?link=", urlencode($con["username"]), "\">".$con["username"]."</a>";
-                                        echo "</td>";
-                                        echo "</div></div></div></tr>";
+                                        echo "<span class=\"street\">  ".$con["street"]."</span>";
                                         echo "<br>";
+                                        echo "<span class=\"city\">  ".$con["city"]."</span>  ,";
+                                        echo "<span class=\"state\">  ".$con["state"]."</span>  ,";
+                                        echo "<br>";
+                                        echo "<span class=\"zipcode\">  ".$con["zipcode"]."</span>";
+                                        echo "<a href=concert_info.php?link=".$con["cid"]."><h4>Concert Details</h4></a>";
+                                        echo "</span></p></div></div></div></div></tr>";
                                     }
                                 ?>
                             </table><!-- table -->
@@ -158,7 +133,9 @@ if (isset($_SESSION["username"])) {
             </div><!--/panel-->
           </div><!--/col--> 
       </div><!--/row--> 
-    <!-- SHOW Recommend List  -->
+    <!--Plan to go  -->
+
+</section>
 
 </section>
         <style>
@@ -227,3 +204,4 @@ if (isset($_SESSION["username"])) {
     <script type="text/javascript" src="js/main.js"></script>  
 </body>
 </html>
+
