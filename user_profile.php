@@ -219,7 +219,7 @@ if (isset($_SESSION["username"])) {
 
 <body>
     <header id="header" role="banner">      
-        <div class="main-nav">
+        <div class="main-nav navbar-fixed-top">
             <div class="container">  
                 <div class="row">                   
                     <div class="navbar-header">
@@ -322,7 +322,7 @@ if (isset($_SESSION["username"])) {
 
     <!-- Plan to Go -->
             <div class="user-plan panel panel-primary">
-                        <div class="panel-heading text-center"><h2>Plan To Go</h2></div>
+                        <div class="panel-heading text-center"><h3>Plan To Go</h3></div>
                             <div class="panel-body">
                             <!-- php loop to show all plan to concert -->
                                <?php
@@ -340,7 +340,7 @@ if (isset($_SESSION["username"])) {
                                         echo "<span class=\"state\">  ".$con["state"]."</span>  ,";
                                         echo "<br>";
                                         echo "<span class=\"zipcode\">  ".$con["zipcode"]."</span>";
-                                        echo "<a href=concert_info.php?link=".$con["cid"]."><h4>Concert Details</h4></a>";
+                                        echo "<a href=concert_info.php?link=".$con["cid"]."><h4>Details</h4></a>";
                                         echo "</span></p></div></div>";
                                     }
                                 ?>
@@ -350,7 +350,7 @@ if (isset($_SESSION["username"])) {
 
     <!-- News Feed -->
             <div class="user-feed panel panel-primary">
-                        <div class="panel-heading text-center"><h2>News Feed</h2></div>
+                        <div class="panel-heading text-center"><h3>News Feed</h3></div>
                             <div class="panel-body">
                             <!-- php loop concert -->
                                <?php
@@ -376,7 +376,7 @@ if (isset($_SESSION["username"])) {
                                         echo "<span class=\"state\">  ".$con["state"]."</span>  ,";
                                         echo "<br>";
                                         echo "<span class=\"zipcode\">  ".$con["zipcode"]."</span>";
-                                        echo "<a href=concert_info.php?link=".$con["cid"]."><h4>Concert Details</h4></a>";
+                                        echo "<a href=concert_info.php?link=".$con["cid"]."><h4>Details</h4></a>";
                                         echo "</span></p></div></div>";
                                     }
                                 ?>
@@ -387,7 +387,7 @@ if (isset($_SESSION["username"])) {
     
     <!-- Live Sense -->
             <div class="sys-guess panel panel-primary">
-                        <div class="panel-heading text-center"><h2>Concerts From <em>Live-Sense</em></h2></div>
+                        <div class="panel-heading text-center"><h3>Concerts From <em>Live-Sense</em></h3></div>
                             <div class="panel-body">
                             <!-- php loop -->
                                <?php
@@ -405,7 +405,7 @@ if (isset($_SESSION["username"])) {
                                         echo "<span class=\"state\">  ".$con["state"]."</span>  ,";
                                         echo "<br>";
                                         echo "<span class=\"zipcode\">  ".$con["zipcode"]."</span>";
-                                        echo "<a href=concert_info.php?link=".$con["cid"]."><h4>Concert Details</h4></a>";
+                                        echo "<a href=concert_info.php?link=".$con["cid"]."><h4>Details</h4></a>";
                                         echo "</span></p></div></div>";
                                     }
                                 ?>
@@ -419,7 +419,7 @@ if (isset($_SESSION["username"])) {
 
         echo "      <!-- Create Concert -->";
         echo "            <div class=\"create-con panel panel-primary\">\n"; 
-        echo "                        <div class=\"panel-heading text-center\"><h2>Post A New Concert</h2></div>\n"; 
+        echo "                        <div class=\"panel-heading text-center\"><h3>Post A New Concert</h3></div>\n"; 
         echo "                        <!-- Post Form -->\n"; 
         echo "                        <div class=\"panel-body\">\n"; 
         echo "                        <form role=\"form\" action=\"post_con.php\" method=\"POST\">\n"; 
@@ -460,7 +460,7 @@ if (isset($_SESSION["username"])) {
 
         echo "    <!-- Recommendation List -->\n";
         echo "            <div class=\"rcmd-list panel panel-primary\">\n"; 
-        echo "                        <div class=\"panel-heading text-center\"><h2>Make a Recommend List</h2></div>\n"; 
+        echo "                        <div class=\"panel-heading text-center\"><h3>Make a Recommend List</h3></div>\n"; 
         echo "                        <!-- Make RL Form -->\n"; 
         echo "                        <div class=\"panel-body\">\n"; 
         echo "                        <form role=\"form\" action=\"make_recommend.php\" method=\"POST\">\n"; 
@@ -517,6 +517,7 @@ if (isset($_SESSION["username"])) {
 
             .panel  {
                 opacity: 0.9;
+                box-shadow: rgba(0, 0, 0, 0.3) 20px 20px 20px;
             }
 
             .fa-star {
