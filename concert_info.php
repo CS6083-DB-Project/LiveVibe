@@ -154,29 +154,29 @@ $mysqli->next_result();
         <div class="panel panel-default">
 
             <div class="panel-heading text-center">
-            <div class="concert-brief">
-                <div class="concert-caption">
-                    <h3><?php echo $con_info["start_time"];?></h3>
-                    <h1><strong>
-                        <?php  echo "<a href=\"artist_public.php?link=", urlencode($con_info["artistname"]), "\">".$con_info["artistname"]."</a>"; ?>
-                    </strong></h1>
+                <div class="concert-brief">
+                    <div class="concert-caption">
+                        <h3><?php echo $con_info["start_time"];?></h3>
+                        <h1><strong>
+                            <?php  echo "<a href=\"artist_public.php?link=", urlencode($con_info["artistname"]), "\">".$con_info["artistname"]."</a>"; ?>
+                        </strong></h1>
+                    </div>
+                    <div class="location">
+                        <h4>
+                            <?php echo $con_info["vname"];?>
+                        </h4>
+                        <p>
+                            <span class="addr">
+                                <span class="street"><?php echo $con_info["street"]; echo ", ";?></span>
+                                <span class="city"><?php echo $con_info["city"]; echo ", ";?></span>
+                                <span class="zipcode"><?php echo $con_info["zipcode"]; ?></span>
+                                <br>
+                                <h6><span class="Poster"><?php echo "Posted by: ".$poster;?></span></h6>
+                                Ratings: <?php echo $avgRating;?>
+                            </span>
+                        </p>
+                    </div>
                 </div>
-                <div class="location">
-                    <h4>
-                        <?php echo $con_info["vname"];?>
-                    </h4>
-                    <p>
-                        <span class="addr">
-                            <span class="street"><?php echo $con_info["street"]; echo ", ";?></span>
-                            <span class="city"><?php echo $con_info["city"]; echo ", ";?></span>
-                            <span class="zipcode"><?php echo $con_info["zipcode"]; ?></span>
-                            <br>
-                            <h6><span class="Poster"><?php echo "Posted by: ".$poster;?></span></h6>
-                            Ratings: <?php echo $avgRating;?>
-                        </span>
-                    </p>
-                </div>
-</div>
                 <div class="row concert-btns">
                     <div class="col-md-6 text-center">
                         <form action="rating.php" method="POST">
