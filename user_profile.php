@@ -251,69 +251,74 @@ if (isset($_SESSION["username"])) {
 <!-- the main scrollable page -->
 <div id="user_page" class="container" >
 
-          <div class="user-info panel panel-default">
-                <div class="panel-body">
-                  <div class="row">
-                  <div class="col-xs-12 col-sm-4 text-center">
-                        <img src="http://api.randomuser.me/portraits/men/47.jpg" alt="" class="center-block img-circle img-responsive">
-                    </div><!--/col--> 
-                    <div class="col-xs-12 col-sm-8">
-                        <h2><?php echo $username_up; ?>
+    <!-- User Information -->
+    <div class="user-info panel panel-default">
+        <div class="panel-body">
+
+            <div class="row">
+                <div class="col-md-4">
+                      <img src="http://api.randomuser.me/portraits/men/47.jpg" alt="" class="center-block img-circle img-responsive">
+                </div><!-- .col-md-4 --> 
+
+                <div class="col-md-8">
+
+                    <h2>
+                        <?php echo $username_up; ?>
                         <?php 
                             if($_SESSION["is_star_usr"]) {echo "<span class=\"fa fa-star\"></span>";}
                         ?>
-                        </h2>
+                    </h2>
+                    <h3><strong><?php echo $city_up.", ".$state_up?></strong></h3>
 
-                        <p><h3><strong><?php echo $city_up.", ".$state_up?></strong></h3></p>
-                        <p><strong>Taste: </strong>
-                        <br>
-                        <!-- use php loop to grab information -->
+                    <div class="media">
+                        <div class="media-body">
+                            <h4 class="media-heading">Taste: </h4>
+                            <!-- use php loop to grab information -->
                             <?php
                                 foreach ($tastes as $tag) {
                                     echo "<span class=\"label label-info tags\">".$tag."</span>";
                                     echo "<br>";
                                 }
                             ?>
-                        </p>
-                    </div><!--/col-->          
-                    <div class="clearfix"></div>
-                    <div class="col-xs-12 col-sm-4">
-                        <h2><strong> <?php echo $follower_up;?></strong></h2>                    
-                        <p><small>Followers</small></p>
-                        <!-- <button class="btn btn-success btn-block"><span class="fa fa-plus-circle"></span>  </button> -->
-                    </div><!--/col-->
-                    <div class="col-xs-12 col-sm-4">
-                        <h2><strong><?php echo $following_up;?></strong></h2>                    
-                        <p><small>Following</small></p>
-                        <!-- <button class="btn btn-info btn-block"><span class="fa fa-user"></span> View Profile </button> -->
-                    </div><!--/col-->
-                    <div class="col-xs-12 col-sm-4">
-                        <h2><strong><?php echo $reviews;?></strong></h2>                    
-                        <p><small>Reviews</small></p>  
-                    </div><!--/col-->
-
-                    <!-- Add Select Music Genre -->
-                    <div class="col-xs-12 col-md-4">
-                    <form role="form" action="add_genre.php" method="POST">
-                            <div class="row">
-                                <div class="col-xs-12 col-sm-12">
-                                    <select  name="genre" class="selectpicker" data-dropdown-auto="false" data-style="btn-success" >
-                                        <?php 
-                                            foreach ($genre_opt as $sub) {
-                                                 echo "<option>".$sub."</option>";
-                                             } 
-                                        ?>
-                                    </select>
-                                </div>
-                            </div>
-                            <br>
-                            <button type="submit" class="btn btn-info btn-block"><span class="fa fa-music"></span>  Add Genre You Like</button>
+                        </div>
+                        <div class="media-right" >
+                            <form class="btn-group pull-right" role="form" action="add_genre.php" method="POST">
+                                <select  name="genre" class="selectpicker pull-left" data-dropdown-auto="false" data-style="btn-success" >
+                                    <?php 
+                                        foreach ($genre_opt as $sub) {
+                                             echo "<option>".$sub."</option>";
+                                         } 
+                                    ?>
+                                </select>
+                                <button type="submit" class="btn btn-info"><span class="fa fa-music"></span> I like it!</button>
                             </form>
+                        </div>
                     </div>
+                        
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h2><strong> <?php echo $follower_up;?></strong></h2>                    
+                            <p><small>Followers</small></p>
+                            <!-- <button class="btn btn-success btn-block"><span class="fa fa-plus-circle"></span>  </button> -->
+                        </div><!--/col-->
+                        <div class="col-md-4">
+                            <h2><strong><?php echo $following_up;?></strong></h2>                    
+                            <p><small>Following</small></p>
+                            <!-- <button class="btn btn-info btn-block"><span class="fa fa-user"></span> View Profile </button> -->
+                        </div><!--/col-->
+                        <div class="col-md-4">
+                            <h2><strong><?php echo $reviews;?></strong></h2>                    
+                            <p><small>Reviews</small></p>  
+                        </div>
+                    </div> <!-- .row -->
 
-                  </div><!--/row-->
-                  </div><!-- panel-body -->
-              </div> <!-- .user-info.panel -->
+                </div><!-- .col-md-8 -->          
+
+            </div><!--/row-->
+
+        </div><!-- panel-body -->
+    </div> <!-- .user-info.panel -->
+    <!-- User Information -->
 
     <!-- Plan to Go -->
             <div class="user-plan panel panel-primary">
@@ -375,7 +380,7 @@ if (isset($_SESSION["username"])) {
                                         echo "</span></p></div></div>";
                                     }
                                 ?>
-                            </div><!-- table -->
+                            </div>
           </div><!-- .user-feed.panel--> 
     <!-- News Feed -->
 
@@ -496,12 +501,6 @@ if (isset($_SESSION["username"])) {
                 width: 100%;
             }
 
-            #user_page {
-                padding-top: 100px;
-                color: #03695E;
-                /*padding-left: 140px;*/
-            }
-
             .navbar-brand {
               background-color: #A30000;
               height: 80px;
@@ -510,6 +509,12 @@ if (isset($_SESSION["username"])) {
               width: 628px;
               opacity: .95
             }
+
+            #user_page {
+                padding-top: 100px;
+                color: #03695E;
+            }
+
             .panel  {
                 opacity: 0.9;
             }
@@ -522,19 +527,11 @@ if (isset($_SESSION["username"])) {
                 color: #A30000;
             }
 
-            #user_page .row {
-                margin-right: auto;
-                margin-left: auto;
-            }
-
             .navbar-collapse {
                 padding-left: 0px;
                 padding-right: 0px;
             }
 
-            .table {
-                font-size: 14px;
-            }
         </style>
 
     <script type="text/javascript" src="js/jquery.js"></script>
