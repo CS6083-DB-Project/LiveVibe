@@ -247,11 +247,11 @@ if (isset($_SESSION["username"])) {
         </div>                    
     </header>
     <!--/#header--> 
-<section id="user_panel">
 
-      <div class="row">
-          <div class="col-md-10">
-          <div class="panel panel-default">
+<!-- the main scrollable page -->
+<div id="user_page" class="container" >
+
+          <div class="user-info panel panel-default">
                 <div class="panel-body">
                   <div class="row">
                   <div class="col-xs-12 col-sm-4 text-center">
@@ -312,26 +312,17 @@ if (isset($_SESSION["username"])) {
                     </div>
 
                   </div><!--/row-->
-                  </div><!--/panel-body-->
-              </div><!--/panel-->
-        </div><!--/col--> 
-      </div><!--/row--> 
-    <!--Profile  -->
+                  </div><!-- panel-body -->
+              </div> <!-- .user-info.panel -->
 
-    <!-- Display Plan to Go -->
-      <div class="row">
-          <div class="col-md-10">
-            <div class="panel panel-default">
-                <div class="panel-body">
-                  <div class="concert-brief">
-                    <div class="panel panel-primary">
-                        <div class="panel-heading text-center"><h2><strong>Plan To Go</strong></h2></div>
-                            <table class="table">
+    <!-- Plan to Go -->
+            <div class="user-plan panel panel-primary">
+                        <div class="panel-heading text-center"><h2>Plan To Go</h2></div>
+                            <div class="panel-body">
                             <!-- php loop to show all plan to concert -->
                                <?php
                                     foreach ($plan_to as $con) {
-                                        echo "<th>";
-                                        echo "<div class=\"container-fluid\"><div class=\"row\"><div class=\"col-md-10\">";
+                                        echo "<div class=\"col-md-4\">"; // shows 3 concerts in a row at once
                                         echo "<div class=\"date-and-name\">";
                                         echo "<h4><span class=\"fa fa-calendar fa-lg\"></span>   ".$con["start_time"]."</h4>";
                                         echo "<h3><a href=\"artist_public.php?link=",urlencode($con["artistname"]),"\">".$con["artistname"]."</a></h3>";
@@ -345,34 +336,24 @@ if (isset($_SESSION["username"])) {
                                         echo "<br>";
                                         echo "<span class=\"zipcode\">  ".$con["zipcode"]."</span>";
                                         echo "<a href=concert_info.php?link=".$con["cid"]."><h4>Concert Details</h4></a>";
-                                        echo "</span></p></div></div></div></div></th>";
+                                        echo "</span></p></div></div>";
                                     }
                                 ?>
-                            </table><!-- table -->
-                    </div><!-- concert-brief -->
-                </div><!--/panel-body-->
-            </div><!--/panel-->
-          </div><!--/col--> 
-      </div><!--/row--> 
-    <!--Plan to go  -->
+                                </div> <!-- panel-body -->
+          </div><!-- .user-plan.panel --> 
+          <!-- Plan to Go -->
 
-    <!-- Display You Followed Recommend List -->
-      <div class="row">
-          <div class="col-md-10">
-            <div class="panel panel-default">
-                <div class="panel-body">
-                  <div class="concert-brief">
-                    <div class="panel panel-info">
-                        <div class="panel-heading text-center"><h2><strong>News Feed</strong></h2></div>
-                            <table class="table">
+    <!-- News Feed -->
+            <div class="user-feed panel panel-primary">
+                        <div class="panel-heading text-center"><h2>News Feed</h2></div>
+                            <div class="panel-body">
                             <!-- php loop concert -->
                                <?php
                                     $spin_cnt = 0;
                                     foreach ($newCon as $con) {
-                                        echo "<th>";
-                                        echo "<div class=\"container-fluid\"><div class=\"row\"><div class=\"col-md-10\">";
+                                        echo "<div class=\"col-md-4\">"; // shows 3 concerts in a row at once
                                         echo "<div class=\"date-and-name\">";
-                                        echo "<h4><span class=\"fa fa-calendar fa-lg\"></span>   ".$con["start_time"];
+                                        echo "<h4><span class=\"fa fa-calendar fa-lg\"></span>".$con["start_time"];
                                         if ($spin_cnt < $newMsg) {
                                             echo "  <h6><em>New + </em><i class=\"fa fa-spinner fa-spin\"></i></h6>";
                                             $spin_cnt++;
@@ -391,31 +372,22 @@ if (isset($_SESSION["username"])) {
                                         echo "<br>";
                                         echo "<span class=\"zipcode\">  ".$con["zipcode"]."</span>";
                                         echo "<a href=concert_info.php?link=".$con["cid"]."><h4>Concert Details</h4></a>";
-                                        echo "</span></p></div></div></div></div></th>";
+                                        echo "</span></p></div></div>";
                                     }
                                 ?>
-                            </table><!-- table -->
-                    </div><!-- concert-brief -->
-                </div><!--/panel-body-->
-            </div><!--/panel-->
-          </div><!--/col--> 
-      </div><!--/row--> 
-    <!--Followed Recommend List  -->
+                            </div><!-- table -->
+          </div><!-- .user-feed.panel--> 
+    <!-- News Feed -->
 
-    <!-- Display System Guess -->
-      <div class="row">
-          <div class="col-md-10">
-            <div class="panel panel-default">
-                <div class="panel-body">
-                  <div class="concert-brief">
-                    <div class="panel panel-success">
-                        <div class="panel-heading text-center"><h2><strong>Concerts From <em> Live-Sense</em></strong></h2></div>
-                            <table class="table">
+    
+    <!-- Live Sense -->
+            <div class="sys-guess panel panel-primary">
+                        <div class="panel-heading text-center"><h2>Concerts From <em>Live-Sense</em></h2></div>
+                            <div class="panel-body">
                             <!-- php loop -->
                                <?php
                                     foreach ($VibeSense as $con) {
-                                        echo "<th>";
-                                        echo "<div class=\"container-fluid\"><div class=\"row\"><div class=\"col-md-10\">";
+                                        echo "<div class=\"col-md-3\">"; // shows 4 concerts in a row at once
                                         echo "<div class=\"date-and-name\">";
                                         echo "<h4><span class=\"fa fa-calendar fa-lg\"></span>   ".$con["start_time"]."</h4>";
                                         echo "<h3><a href=\"artist_public.php?link=", urlencode($con["artistname"]),"\">".$con["artistname"]."</a></h3>";
@@ -429,29 +401,22 @@ if (isset($_SESSION["username"])) {
                                         echo "<br>";
                                         echo "<span class=\"zipcode\">  ".$con["zipcode"]."</span>";
                                         echo "<a href=concert_info.php?link=".$con["cid"]."><h4>Concert Details</h4></a>";
-                                        echo "</span></p></div></div></div></div></th>";
+                                        echo "</span></p></div></div>";
                                     }
                                 ?>
-                            </table><!-- table -->
-                    </div><!-- concert-brief -->
-                </div><!--/panel-body-->
-            </div><!--/panel-->
-          </div><!--/col--> 
-      </div><!--/row--> 
-    <!--System Guess -->
+                            </div><!-- panel-body -->
+          </div><!-- .sys-guess.panel --> 
+    <!-- Live Sense -->
 
     <!-- If Star User: Can Post Additional Info -->
     <?php
     if ($_SESSION["is_star_usr"]) {
-        echo "      <div class=\"row\">\n"; 
-        echo "          <div class=\"col-md-10\">\n"; 
-        echo "            <div class=\"panel panel-default\">\n"; 
-        echo "                <div class=\"panel-body\">\n"; 
-        echo "                  <div class=\"concert-brief\">\n"; 
-        echo "                    <div class=\"panel panel-success\">\n"; 
-        echo "                        <div class=\"panel-heading text-center\"><h2><strong>Post A New Concert</strong></h2></div>\n"; 
+
+        echo "      <!-- Create Concert -->";
+        echo "            <div class=\"create-con panel panel-primary\">\n"; 
+        echo "                        <div class=\"panel-heading text-center\"><h2>Post A New Concert</h2></div>\n"; 
         echo "                        <!-- Post Form -->\n"; 
-        echo "                        <br>\n"; 
+        echo "                        <div class=\"panel-body\">\n"; 
         echo "                        <form role=\"form\" action=\"post_con.php\" method=\"POST\">\n"; 
         echo "                            <div class=\"form-group\">\n";
         echo "                                 Select a Artist in LiveVibe: ";
@@ -480,26 +445,19 @@ if (isset($_SESSION["username"])) {
         echo "                            </div>\n"; 
         echo "\n"; 
         echo "                            <button type=\"submit\" class=\"btn btn-primary pull-right\">Post</button>\n"; 
-        echo "                         </form>\n"; 
-        echo "                    </div><!-- concert-brief -->\n"; 
-        echo "                </div><!--/panel-body-->\n"; 
-        echo "            </div><!--/panel-->\n"; 
-        echo "          </div><!--/col--> \n"; 
-        echo "      </div><!--/row--> \n"; 
-        echo "    <!-- Post Con-->\n";
+        echo "                         </form></div> <!-- panel-body -->\n"; 
+        echo "          </div><!-- .create-con.panel --> \n"; 
+        echo "    <!-- Create Concert -->\n";
 
         // =======================
         // Can Make Recommand List
         // =======================
-        echo "      <div class=\"row\">\n"; 
-        echo "          <div class=\"col-md-10\">\n"; 
-        echo "            <div class=\"panel panel-default\">\n"; 
-        echo "                <div class=\"panel-body\">\n"; 
-        echo "                  <div class=\"concert-brief\">\n"; 
-        echo "                    <div class=\"panel panel-success\">\n"; 
-        echo "                        <div class=\"panel-heading text-center\"><h2><strong>Make a Recommend List</strong></h2></div>\n"; 
+
+        echo "    <!-- Recommendation List -->\n";
+        echo "            <div class=\"rcmd-list panel panel-primary\">\n"; 
+        echo "                        <div class=\"panel-heading text-center\"><h2>Make a Recommend List</h2></div>\n"; 
         echo "                        <!-- Make RL Form -->\n"; 
-        echo "                        <br>\n"; 
+        echo "                        <div class=\"panel-body\">\n"; 
         echo "                        <form role=\"form\" action=\"make_recommend.php\" method=\"POST\">\n"; 
         echo "                            <div class=\"form-group\">\n";
         echo "                                 Recommendation List Name: "; 
@@ -515,19 +473,14 @@ if (isset($_SESSION["username"])) {
         echo "                            </div>\n"; 
         echo "\n"; 
         echo "                            <button type=\"submit\" class=\"btn btn-primary pull-right\">Add</button>\n"; 
-        echo "                         </form>\n"; 
-        echo "                    </div><!-- concert-brief -->\n"; 
-        echo "                </div><!--/panel-body-->\n"; 
-        echo "            </div><!--/panel-->\n"; 
-        echo "          </div><!--/col--> \n"; 
-        echo "      </div><!--/row--> \n"; 
-        echo "    <!-- Post Con-->\n";
+        echo "                         </form></div>\n"; 
+        echo "          </div><!-- .rcmd-list.panel --> \n"; 
+        echo "    <!-- Recommendation List -->\n";
     }
     ?>
 
-</section>
+</div> <!-- .user_page.container -->
 
-</section>
         <style>
             body {
                 background-image: url("./images/bg/register_bg.png");
@@ -543,10 +496,10 @@ if (isset($_SESSION["username"])) {
                 width: 100%;
             }
 
-            #user_panel {
+            #user_page {
                 padding-top: 100px;
                 color: #03695E;
-                padding-left: 140px;
+                /*padding-left: 140px;*/
             }
 
             .navbar-brand {
@@ -569,7 +522,7 @@ if (isset($_SESSION["username"])) {
                 color: #A30000;
             }
 
-            #user_panel .row {
+            #user_page .row {
                 margin-right: auto;
                 margin-left: auto;
             }
@@ -583,7 +536,7 @@ if (isset($_SESSION["username"])) {
                 font-size: 14px;
             }
         </style>
-</section>
+
     <script type="text/javascript" src="js/jquery.js"></script>
     <script type="text/javascript" src="js/bootstrap.min.js"></script>
     <script type="text/javascript" src="js/bootstrap-select.js"></script>
