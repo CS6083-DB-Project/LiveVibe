@@ -31,13 +31,20 @@ if (!empty($_POST["username"]) && !empty($_POST["password"])) {
         $stmtRegUsr = $mysqli->prepare("CALL uprofile_insert(?,?,?,?,?,?,?,?)");
         $stmtRegUsr->bind_param("ssssssss", $uname, $pwd, $real, $birth, $city, $state, $zipcode, $reg_time);
         $stmtRegUsr->execute();
+
+        echo "<script>alert(\"Successfully Registerd!\")</script>";
+        redirect("http://localhost:8888/livevibe/user_profile.php");
+        exit();
     }
     $mysqli->next_result();
     if ($type == 'artist') {
         $stmtRegArt = $mysqli->prepare("CALL artist_insert(?,?,?,?)");
         $stmtRegArt->bind_param("ssss", $uname, $pwd, $bio, $reg_time);
         $stmtRegArt->execute();
+
+        echo "<script>alert(\"Successfully Registerd!\")</script>";
+        redirect("http://localhost:8888/livevibe/artist_profile.php");
+        exit();
     }
-    // $mysqli->next_result();
 }
 ?>
