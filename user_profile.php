@@ -219,7 +219,7 @@ if (isset($_SESSION["username"])) {
 
 <body>
     <header id="header" role="banner">      
-        <div class="main-nav">
+        <div class="main-nav navbar-fixed-top">
             <div class="container">  
                 <div class="row">                   
                     <div class="navbar-header">
@@ -251,73 +251,78 @@ if (isset($_SESSION["username"])) {
 <!-- the main scrollable page -->
 <div id="user_page" class="container" >
 
-          <div class="user-info panel panel-default">
-                <div class="panel-body">
-                  <div class="row">
-                  <div class="col-xs-12 col-sm-4 text-center">
-                        <img src="http://api.randomuser.me/portraits/men/47.jpg" alt="" class="center-block img-circle img-responsive">
-                    </div><!--/col--> 
-                    <div class="col-xs-12 col-sm-8">
-                        <h2><?php echo $username_up; ?>
+    <!-- User Information -->
+    <div class="user-info panel panel-default">
+        <div class="panel-body">
+
+            <div class="row">
+                <div class="col-md-4">
+                      <img src="http://api.randomuser.me/portraits/men/47.jpg" alt="" class="center-block img-circle img-responsive">
+                </div><!-- .col-md-4 --> 
+
+                <div class="col-md-8">
+
+                    <h2>
+                        <?php echo $username_up; ?>
                         <?php 
                             if($_SESSION["is_star_usr"]) {echo "<span class=\"fa fa-star\"></span>";}
                         ?>
-                        </h2>
+                    </h2>
+                    <h3><strong><?php echo $city_up.", ".$state_up?></strong></h3>
 
-                        <p><h3><strong><?php echo $city_up.", ".$state_up?></strong></h3></p>
-                        <p><strong>Taste: </strong>
-                        <br>
-                        <!-- use php loop to grab information -->
+                    <div class="media">
+                        <div class="media-body">
+                            <h4 class="media-heading">Taste: </h4>
+                            <!-- use php loop to grab information -->
                             <?php
                                 foreach ($tastes as $tag) {
                                     echo "<span class=\"label label-info tags\">".$tag."</span>";
                                     echo "<br>";
                                 }
                             ?>
-                        </p>
-                    </div><!--/col-->          
-                    <div class="clearfix"></div>
-                    <div class="col-xs-12 col-sm-4">
-                        <h2><strong> <?php echo $follower_up;?></strong></h2>                    
-                        <p><small>Followers</small></p>
-                        <!-- <button class="btn btn-success btn-block"><span class="fa fa-plus-circle"></span>  </button> -->
-                    </div><!--/col-->
-                    <div class="col-xs-12 col-sm-4">
-                        <h2><strong><?php echo $following_up;?></strong></h2>                    
-                        <p><small>Following</small></p>
-                        <!-- <button class="btn btn-info btn-block"><span class="fa fa-user"></span> View Profile </button> -->
-                    </div><!--/col-->
-                    <div class="col-xs-12 col-sm-4">
-                        <h2><strong><?php echo $reviews;?></strong></h2>                    
-                        <p><small>Reviews</small></p>  
-                    </div><!--/col-->
-
-                    <!-- Add Select Music Genre -->
-                    <div class="col-xs-12 col-md-4">
-                    <form role="form" action="add_genre.php" method="POST">
-                            <div class="row">
-                                <div class="col-xs-12 col-sm-12">
-                                    <select  name="genre" class="selectpicker" data-dropdown-auto="false" data-style="btn-success" >
-                                        <?php 
-                                            foreach ($genre_opt as $sub) {
-                                                 echo "<option>".$sub."</option>";
-                                             } 
-                                        ?>
-                                    </select>
-                                </div>
-                            </div>
-                            <br>
-                            <button type="submit" class="btn btn-info btn-block"><span class="fa fa-music"></span>  Add Genre You Like</button>
+                        </div>
+                        <div class="media-right" >
+                            <form class="btn-group pull-right" role="form" action="add_genre.php" method="POST">
+                                <select  name="genre" class="selectpicker pull-left" data-dropdown-auto="false" data-style="btn-success" >
+                                    <?php 
+                                        foreach ($genre_opt as $sub) {
+                                             echo "<option>".$sub."</option>";
+                                         } 
+                                    ?>
+                                </select>
+                                <button type="submit" class="btn btn-info"><span class="fa fa-music"></span> I like it!</button>
                             </form>
+                        </div>
                     </div>
+                        
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h2><strong> <?php echo $follower_up;?></strong></h2>                    
+                            <p><small>Followers</small></p>
+                            <!-- <button class="btn btn-success btn-block"><span class="fa fa-plus-circle"></span>  </button> -->
+                        </div><!--/col-->
+                        <div class="col-md-4">
+                            <h2><strong><?php echo $following_up;?></strong></h2>                    
+                            <p><small>Following</small></p>
+                            <!-- <button class="btn btn-info btn-block"><span class="fa fa-user"></span> View Profile </button> -->
+                        </div><!--/col-->
+                        <div class="col-md-4">
+                            <h2><strong><?php echo $reviews;?></strong></h2>                    
+                            <p><small>Reviews</small></p>  
+                        </div>
+                    </div> <!-- .row -->
 
-                  </div><!--/row-->
-                  </div><!-- panel-body -->
-              </div> <!-- .user-info.panel -->
+                </div><!-- .col-md-8 -->          
+
+            </div><!--/row-->
+
+        </div><!-- panel-body -->
+    </div> <!-- .user-info.panel -->
+    <!-- User Information -->
 
     <!-- Plan to Go -->
             <div class="user-plan panel panel-primary">
-                        <div class="panel-heading text-center"><h2>Plan To Go</h2></div>
+                        <div class="panel-heading text-center"><h3>Plan To Go</h3></div>
                             <div class="panel-body">
                             <!-- php loop to show all plan to concert -->
                                <?php
@@ -329,13 +334,13 @@ if (isset($_SESSION["username"])) {
                                         echo "</div>";
                                         echo "<div class=\"location\"><h4>".$con["vname"]."</h4><p>";
                                         echo "<span class=\"addr\">";
-                                        echo "<span class=\"street\">  ".$con["street"]."</span>";
+                                        echo "<span class=\"street\">  ".$con["street"]."</span>,";
                                         echo "<br>";
-                                        echo "<span class=\"city\">  ".$con["city"]."</span>  ,";
-                                        echo "<span class=\"state\">  ".$con["state"]."</span>  ,";
+                                        echo "<span class=\"city\">  ".$con["city"]."</span>,";
                                         echo "<br>";
+                                        echo "<span class=\"state\">  ".$con["state"]."</span>,";
                                         echo "<span class=\"zipcode\">  ".$con["zipcode"]."</span>";
-                                        echo "<a href=concert_info.php?link=".$con["cid"]."><h4>Concert Details</h4></a>";
+                                        echo "<a href=concert_info.php?link=".$con["cid"]."><h4>Details</h4></a>";
                                         echo "</span></p></div></div>";
                                     }
                                 ?>
@@ -345,62 +350,62 @@ if (isset($_SESSION["username"])) {
 
     <!-- News Feed -->
             <div class="user-feed panel panel-primary">
-                        <div class="panel-heading text-center"><h2>News Feed</h2></div>
+                        <div class="panel-heading text-center"><h3>News Feed</h3></div>
                             <div class="panel-body">
                             <!-- php loop concert -->
                                <?php
                                     $spin_cnt = 0;
                                     foreach ($newCon as $con) {
-                                        echo "<div class=\"col-md-4\">"; // shows 3 concerts in a row at once
-                                        echo "<div class=\"date-and-name\">";
-                                        echo "<h4><span class=\"fa fa-calendar fa-lg\"></span>".$con["start_time"];
+                                        echo "<div class=\"col-md-4 concert_info\">"; // shows 3 concerts in a row at once
+                                        echo "<div class=\"concert-caption\">";
+                                        echo "<h4><span class=\"fa fa-calendar fa-lg\"></span>   ".$con["start_time"];
                                         if ($spin_cnt < $newMsg) {
                                             echo "  <h6><em>New + </em><i class=\"fa fa-spinner fa-spin\"></i></h6>";
                                             $spin_cnt++;
                                         }
                                         echo "</h4>";
                                         echo "From Star User: <a href=\"user_public.php?link=", urlencode($star), "\">".$star."</a>";
-                                        echo "<h6>Recommend List Name: <a href=\"show_recomList.php?link=", urlencode($con["listname"]), "\">".$con["listname"]."</a></h6>";
+                                        echo "<h5>From the list: <a href=\"show_recomList.php?link=", urlencode($con["listname"]), "\">".$con["listname"]."</a></h5>";
                                         echo "<h3><a href=\"artist_public.php?link=", urlencode($con["artistname"]), "\">".$con["artistname"]."</a></h3>";
                                         echo "</div>";
                                         echo "<div class=\"location\"><h4>".$con["vname"]."</h4><p>";
                                         echo "<span class=\"addr\">";
-                                        echo "<span class=\"street\">  ".$con["street"]."</span>";
+                                        echo "<span class=\"street\">  ".$con["street"]."</span>,";
                                         echo "<br>";
-                                        echo "<span class=\"city\">  ".$con["city"]."</span>  ,";
-                                        echo "<span class=\"state\">  ".$con["state"]."</span>  ,";
+                                        echo "<span class=\"city\">  ".$con["city"]."</span>,";
                                         echo "<br>";
+                                        echo "<span class=\"state\">  ".$con["state"]."</span>,";
                                         echo "<span class=\"zipcode\">  ".$con["zipcode"]."</span>";
-                                        echo "<a href=concert_info.php?link=".$con["cid"]."><h4>Concert Details</h4></a>";
+                                        echo "<a href=concert_info.php?link=".$con["cid"]."><h5>Details</h5></a>";
                                         echo "</span></p></div></div>";
                                     }
                                 ?>
-                            </div><!-- table -->
+                            </div>
           </div><!-- .user-feed.panel--> 
     <!-- News Feed -->
 
     
     <!-- Live Sense -->
             <div class="sys-guess panel panel-primary">
-                        <div class="panel-heading text-center"><h2>Concerts From <em>Live-Sense</em></h2></div>
+                        <div class="panel-heading text-center"><h3>Concerts From <em>Live-Sense</em></h3></div>
                             <div class="panel-body">
                             <!-- php loop -->
                                <?php
                                     foreach ($VibeSense as $con) {
-                                        echo "<div class=\"col-md-3\">"; // shows 4 concerts in a row at once
-                                        echo "<div class=\"date-and-name\">";
+                                        echo "<div class=\"col-md-3 concert_info\">"; // shows 4 concerts in a row at once
+                                        echo "<div class=\"concert-caption\">";
                                         echo "<h4><span class=\"fa fa-calendar fa-lg\"></span>   ".$con["start_time"]."</h4>";
                                         echo "<h3><a href=\"artist_public.php?link=", urlencode($con["artistname"]),"\">".$con["artistname"]."</a></h3>";
                                         echo "</div>";
                                         echo "<div class=\"location\"><h4>".$con["vname"]."</h4><p>";
                                         echo "<span class=\"addr\">";
-                                        echo "<span class=\"street\">  ".$con["street"]."</span>";
+                                        echo "<span class=\"street\">  ".$con["street"]."</span>,";
                                         echo "<br>";
-                                        echo "<span class=\"city\">  ".$con["city"]."</span>  ,";
-                                        echo "<span class=\"state\">  ".$con["state"]."</span>  ,";
+                                        echo "<span class=\"city\">  ".$con["city"]."</span>,";
                                         echo "<br>";
+                                        echo "<span class=\"state\">  ".$con["state"]."</span>,";
                                         echo "<span class=\"zipcode\">  ".$con["zipcode"]."</span>";
-                                        echo "<a href=concert_info.php?link=".$con["cid"]."><h4>Concert Details</h4></a>";
+                                        echo "<a href=concert_info.php?link=".$con["cid"]."><h4>Details</h4></a>";
                                         echo "</span></p></div></div>";
                                     }
                                 ?>
@@ -414,7 +419,7 @@ if (isset($_SESSION["username"])) {
 
         echo "      <!-- Create Concert -->";
         echo "            <div class=\"create-con panel panel-primary\">\n"; 
-        echo "                        <div class=\"panel-heading text-center\"><h2>Post A New Concert</h2></div>\n"; 
+        echo "                        <div class=\"panel-heading text-center\"><h3>Post A New Concert</h3></div>\n"; 
         echo "                        <!-- Post Form -->\n"; 
         echo "                        <div class=\"panel-body\">\n"; 
         echo "                        <form role=\"form\" action=\"post_con.php\" method=\"POST\">\n"; 
@@ -455,7 +460,7 @@ if (isset($_SESSION["username"])) {
 
         echo "    <!-- Recommendation List -->\n";
         echo "            <div class=\"rcmd-list panel panel-primary\">\n"; 
-        echo "                        <div class=\"panel-heading text-center\"><h2>Make a Recommend List</h2></div>\n"; 
+        echo "                        <div class=\"panel-heading text-center\"><h3>Make a Recommend List</h3></div>\n"; 
         echo "                        <!-- Make RL Form -->\n"; 
         echo "                        <div class=\"panel-body\">\n"; 
         echo "                        <form role=\"form\" action=\"make_recommend.php\" method=\"POST\">\n"; 
@@ -490,16 +495,6 @@ if (isset($_SESSION["username"])) {
                 background-position: top center !important;
                 background-repeat: no-repeat !important;
                 background-attachment: fixed;
-                margin: 0;
-                padding: 0;
-                height: 100%;
-                width: 100%;
-            }
-
-            #user_page {
-                padding-top: 100px;
-                color: #03695E;
-                /*padding-left: 140px;*/
             }
 
             .navbar-brand {
@@ -510,8 +505,15 @@ if (isset($_SESSION["username"])) {
               width: 628px;
               opacity: .95
             }
+
+            #user_page {
+                padding-top: 100px;
+                color: #03695E;
+            }
+
             .panel  {
                 opacity: 0.9;
+                box-shadow: rgba(0, 0, 0, 0.3) 20px 20px 20px;
             }
 
             .fa-star {
@@ -522,19 +524,11 @@ if (isset($_SESSION["username"])) {
                 color: #A30000;
             }
 
-            #user_page .row {
-                margin-right: auto;
-                margin-left: auto;
-            }
-
             .navbar-collapse {
                 padding-left: 0px;
                 padding-right: 0px;
             }
 
-            .table {
-                font-size: 14px;
-            }
         </style>
 
     <script type="text/javascript" src="js/jquery.js"></script>

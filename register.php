@@ -71,74 +71,74 @@ if (isset($_SESSION["username"])) {
     </header>
     <!--/#header--> 
 
-    <section id="usrprof"> 
-     <div class="container" id="container1">
-            <div class="row centered-form">
-                <div class="col-xs-12 col-sm-8 col-md-4 col-sm-offset-2 col-md-offset-4">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h2 class="panel-title text-center">Welcome to LiveVibe</h2>
+    <div class="container" id="reg_page">
+        <div class="panel panel-default">
+
+            <div class="panel-heading">
+                <h4 class="text-center">Welcome to LiveVibe</h4>
+            </div>
+
+            <div class="panel-body">
+                <form role="form" action="register_backend.php" method="POST">
+                    <div class="form-group">
+                        <input type="text" name="username" id="username" class="form-control input-md" placeholder="Nickname">
+                    </div>
+
+                    <div class="form-group">
+                        <input type="password" name="password" id="password" class="form-control input-md" placeholder="Password">
+                    </div>
+
+                    <div class="form-group">
+                        <input type="text" name="realname" id="realname" class="form-control input-md" placeholder="Realname">
+                    </div>
+
+                    <div class="form-group">
+                        <input type="text" name="birth" id="birth" class="form-control input-md" placeholder="Birthday">
+                    </div>
+
+                    <div class="form-group">
+                        <input type="text" name="city" id="city" class="form-control input-md" placeholder="City">
+                    </div>
+
+                    <div class="form-group">
+                        <input type="text" name="state" id="state" class="form-control input-md" placeholder="State">
+                    </div>
+
+                    <div class="form-group">
+                        <input type="zipcode" name="zipcode" id="zipcode" class="form-control input-md" placeholder="Zipcode">
+                    </div>
+
+                    <div class="form-group">
+                        <input type="bio" name="bio" id="bio" class="form-control input-md" placeholder="Bio (Artist)">
+                    </div>
+                    <!-- Checkbox -->
+                    
+                    <div class="row">
+                        <div class="col-xs-6 col-sm-6 col-md-6">
+                            <div class="form-group">
+                                <label class="radio-inline">
+                                    <input type="radio" name="type" value="user"  class="form-control input-sm"> User
+                                </label>
+                                
+                            </div>
                         </div>
-                        <div class="panel-body">
-                            <form role="form" action="register_backend.php" method="POST">
-                                <div class="form-group">
-                                    <input type="text" name="username" id="username" class="form-control input-md" placeholder="Nickname">
-                                </div>
 
-                                <div class="form-group">
-                                    <input type="password" name="password" id="password" class="form-control input-md" placeholder="Password">
-                                </div>
-
-                                <div class="form-group">
-                                    <input type="text" name="realname" id="realname" class="form-control input-md" placeholder="Realname">
-                                </div>
-
-                                <div class="form-group">
-                                    <input type="text" name="birth" id="birth" class="form-control input-md" placeholder="Birthday">
-                                </div>
-
-                                <div class="form-group">
-                                    <input type="text" name="city" id="city" class="form-control input-md" placeholder="City">
-                                </div>
-
-                                <div class="form-group">
-                                    <input type="text" name="state" id="state" class="form-control input-md" placeholder="State">
-                                </div>
-
-                                <div class="form-group">
-                                    <input type="zipcode" name="zipcode" id="zipcode" class="form-control input-md" placeholder="Zipcode">
-                                </div>
-
-                                 <div class="form-group">
-                                    <input type="bio" name="bio" id="bio" class="form-control input-md" placeholder="Bio (Artist)">
-                                </div>
-                                <!-- Checkbox -->
-                                <div class="row">
-                                    <div class="col-xs-6 col-sm-6 col-md-6">
-                                        <div class="form-group">
-                                            <label class="checkbox_info">
-                                                <input type="radio" name="type" value="user"  class="form-control input-sm"> User
-                                            </label>
-                                            
-                                        </div>
-                                    </div>
-
-                                    <div class="col-xs-6 col-sm-6 col-md-6">
-                                        <div class="form-group">
-                                            <label class="checkbox_info">
-                                                <input type="radio" name="type" value="artist" class="form-control input-sm"> Artist
-                                            </label> 
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <input type="submit" value="Submit" class="btn btn-info btn-block">
-                            </form>
+                        <div class="col-xs-6 col-sm-6 col-md-6">
+                            <div class="form-group">
+                                <label class="radio-inline">
+                                    <input type="radio" name="type" value="artist" class="form-control input-sm"> Artist
+                                </label> 
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
+
+                    <input type="submit" value="Submit" class="btn btn-info btn-block">
+
+                </form>
+            </div>  <!-- .panel-body -->
+        
+        </div> <!-- .panel -->
+    </div> <!-- #reg_page.container -->
 
         <style>
         body {
@@ -155,23 +155,33 @@ if (isset($_SESSION["username"])) {
           opacity: .95
         }
 
-        .centered-form {
-            margin-top: 150px;
-            margin-bottom: 120px;
+        #reg_page {
+            padding-top: 100px;
+            max-width: 730px;
         }
 
-        .centered-form .panel {
-            background: rgba(255, 255, 255, 0.8);
+        #reg_page .form-control {
+            font-size: 14px;
+            height: 34px;
+            margin: 0;
+            padding: 6px 12px;
+        }   // fallback to Bootstrap default
+
+        .panel {
+            /*background: rgba(255, 255, 255, 0.8);*/
             box-shadow: rgba(0, 0, 0, 0.3) 20px 20px 20px;
         }
 
-        .checkbox_info {
+        .radio-inline {
             color: #A30000;
-            font-size: 13px;
+            font-size: 16px;
         }
-        </style>      
-    </section>
 
+        .radio-inline input {
+            box-shadow: none;
+        }
+
+        </style>      
 
     <script type="text/javascript" src="js/jquery.js"></script>
     <script type="text/javascript" src="js/bootstrap.min.js"></script>

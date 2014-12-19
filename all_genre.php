@@ -69,98 +69,66 @@ $mysqli->next_result();
         </div>                    
     </header>
     <!--/#header--> 
-<section id="user_panel">
 
-    <!-- All Genre With Links -->
-     <!-- Display All Genre With Links-->
-      <div class="row">
-          <div class="col-md-10">
-            <div class="panel panel-default">
-                <div class="panel-body">
-                  <div class="concert-brief">
-                    <div class="panel panel-info">
-                        <div class="panel-heading text-center">
-                            <h2>
-                            Genre List
-                            </h2>
-                        </div>
-                            <table class="table" class="text-center">
-                            <!-- php loop genre -->
-                               <?php
-                                    foreach ($genre as $g) {
-                                        echo "<tr>";
-                                        echo "<div class=\"container-fluid\"><div class=\"row\"><div class=\"col-md-10\">";
-                                        echo "<a href=\"genre_concert.php?link=", urlencode($g["sub"]), "\">".$g["main"]." -- ".$g["sub"]."</a>";
-                                        echo "</div></div></div></tr>";
-                                        echo "<br>";
-                                    }
-                                ?>
-                            </table><!-- table -->
-                    </div><!-- concert-brief -->
-                </div><!--/panel-body-->
-            </div><!--/panel-->
-          </div><!--/col--> 
-      </div><!--/row--> 
-    <!-- SHOW Recommend List  -->
+    <div id="list_page" class="container">
+        <div class="panel panel-primary">
+            <div class="panel-heading text-center"><h3>Genres</h3></div>
+            <div class="list-group">
+               <?php
+                    foreach ($genre as $g) {
+                        echo "<a href=\"genre_concert.php?link=", urlencode($g["sub"]), "\" class=\"list-group-item\"><h4>".$g["main"]." &ndash; ".$g["sub"]."</h4></a>";
+                    }
+                ?>
+            </div> <!-- .list-group -->
+        </div> <!-- .panel -->
+    </div> <!-- #list_page.container -->
 
-</section>
-        <style>
-            body {
-                background-image: url("./images/bg/register_bg.png");
-                background-color: #A30000;
-                background-repeat:no-repeat;
-                background-size:cover;
-                background-position: top center !important;
-                background-repeat: no-repeat !important;
-                background-attachment: fixed;
-                margin: 0;
-                padding: 0;
-                height: 100%;
-                width: 100%;
-            }
+    <style>
+        body {
+            background-image: url("./images/bg/register_bg.png");
+            background-color: #A30000;
+            background-repeat:no-repeat;
+            background-size:cover;
+            background-position: top center !important;
+            background-repeat: no-repeat !important;
+            background-attachment: fixed;
+        }
 
-            #user_panel {
-                padding-top: 100px;
-                color: #03695E;
-                padding-left: 140px;
-            }
+        .navbar-brand {
+          background-color: #A30000;
+          height: 80px;
+          margin-bottom: 20px;
+          position: relative;
+          width: 628px;
+          opacity: .95
+        }
 
-            .navbar-brand {
-              background-color: #A30000;
-              height: 80px;
-              margin-bottom: 20px;
-              position: relative;
-              width: 628px;
-              opacity: .95
-            }
-            .panel  {
-                opacity: 0.9;
-            }
+        #list_page {
+            max-width: 730px;
+            padding-top: 100px;
+            color: #03695E;
+        }
 
-            .fa-star {
-                color: #FFD700;
-            }
+        .panel  {
+            opacity: 0.9;
+            box-shadow: rgba(0, 0, 0, 0.3) 20px 20px 20px;
+        }
 
-            .fa-calendar {
-                color: #A30000;
-            }
+        .fa-star {
+            color: #FFD700;
+        }
 
-            #user_panel .row {
-                margin-right: auto;
-                margin-left: auto;
-            }
+        .fa-calendar {
+            color: #A30000;
+        }
 
-            .navbar-collapse {
-                padding-left: 0px;
-                padding-right: 0px;
-            }
+        .navbar-collapse {
+            padding-left: 0px;
+            padding-right: 0px;
+        }
 
-            .table {
-                font-size: 20px;
-                text-align: center;
-            }
-        </style>
-</section>
+    </style>
+
     <script type="text/javascript" src="js/jquery.js"></script>
     <script type="text/javascript" src="js/bootstrap.min.js"></script>
     <script type="text/javascript" src="js/bootstrap-select.js"></script>

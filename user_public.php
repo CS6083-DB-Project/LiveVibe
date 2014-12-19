@@ -183,159 +183,141 @@ if (isset($_SESSION["username"])) {
             </div>
         </div>                    
     </header>
-    <!--/#header--> 
-<section id="user_panel">
+    <!-- header --> 
 
-      <div class="row">
-          <div class="col-md-10">
-          <div class="panel panel-default">
-                <div class="panel-body">
-                  <div class="row">
-                  <div class="col-xs-12 col-sm-4 text-center">
+    <div id="user_page" class="container">
+
+        <div class="user-profile panel panel-default">
+
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-4 text-center">
                         <img src="http://api.randomuser.me/portraits/men/99.jpg" alt="" class="center-block img-circle img-responsive">
                     </div><!--/col--> 
                     <div class="col-xs-12 col-sm-8">
                         <h2><?php echo $username_public; ?>
-                        <?php 
+                            <?php 
                             if($star_pub) {echo "<span class=\"fa fa-star\"></span>";}
-                        ?>
+                            ?>
                         </h2>
 
                         <p><h3><strong><?php echo $city_pub.", ".$state_pub?></strong></h3></p>
                         <p><strong>Taste: </strong>
-                        <br>
-                        <!-- use php loop to grab information -->
+                            <br>
+                            <!-- use php loop to grab information -->
                             <?php
-                                foreach ($tastes as $tag) {
-                                    echo "<span class=\"label label-info tags\">".$tag."</span>";
-                                    echo "<br>";
-                                }
+                            foreach ($tastes as $tag) {
+                                echo "<span class=\"label label-info tags\">".$tag."</span>";
+                                echo "<br>";
+                            }
                             ?>
                         </p>
                         <br>
                         <?php
-                            if ($is_followed) {
-                                echo "<div class=\"col-md-4\">";
-                                echo "<button name=\"follow\" type=\"submit\" class=\"btn btn-info btn-block\"><i class=\"fa fa-eye fa-lg\"></i>Followed</button></form>";
-                                echo "</div>";
-                            }
-                            else {
-                                echo "<div class=\"col-md-4\">";
-                                echo "<form action=\"follow_action.php\" method=\"POST\"><button name=\"follow\" type=\"submit\" class=\"btn btn-success btn-block\"><i class=\"fa fa-plus-circle\"></i> Follow</button></form>";
-                                echo "</div>";
-                            }
+                        if ($is_followed) {
+                            echo "<div class=\"col-md-4\">";
+                            echo "<button name=\"follow\" type=\"submit\" class=\"btn btn-info btn-block\"><i class=\"fa fa-eye fa-lg\"></i>Followed</button></form>";
+                            echo "</div>";
+                        }
+                        else {
+                            echo "<div class=\"col-md-4\">";
+                            echo "<form action=\"follow_action.php\" method=\"POST\"><button name=\"follow\" type=\"submit\" class=\"btn btn-success btn-block\"><i class=\"fa fa-plus-circle\"></i> Follow</button></form>";
+                            echo "</div>";
+                        }
                         ?>
                         <!-- <div class="col-md-4">
-                            <form action="follow_action.php" method="POST"><button name="follow" type="submit" class="btn btn-success btn-block"><span class="fa fa-plus-circle"></span>  Follow</button></form>
+                        <form action="follow_action.php" method="POST"><button name="follow" type="submit" class="btn btn-success btn-block"><span class="fa fa-plus-circle"></span>  Follow</button></form>
                         </div> -->
-                    </div><!--/col-->          
-                    <div class="clearfix"></div>
-                    <div class="col-xs-12 col-sm-4">
-                        <h2><strong> <?php echo $follower_pub;?></strong></h2>                    
-                        <p><small>Followers</small></p>
-                         
-                    </div><!--/col-->
-                    <div class="col-xs-12 col-sm-4">
-                        <h2><strong><?php echo $following_pub;?></strong></h2>                    
-                        <p><small>Following</small></p>
-                        <!-- <button class="btn btn-info btn-block"><span class="fa fa-user"></span> View Profile </button> -->
-                    </div><!--/col-->
-                    <div class="col-xs-12 col-sm-4">
-                        <h2><strong><?php echo $reviews;?></strong></h2>                    
-                        <p><small>Reviews</small></p>  
-                    </div><!--/col-->
+                        </div><!--/col-->          
+                        <div class="clearfix"></div>
+                        <div class="col-xs-12 col-sm-4">
+                            <h2><strong> <?php echo $follower_pub;?></strong></h2>                    
+                            <p><small>Followers</small></p>
 
-                  </div><!--/row-->
-                  </div><!--/panel-body-->
-              </div><!--/panel-->
-        </div><!--/col--> 
-      </div><!--/row--> 
-    <!--Profile  -->
+                        </div><!--/col-->
+                        <div class="col-xs-12 col-sm-4">
+                            <h2><strong><?php echo $following_pub;?></strong></h2>                    
+                            <p><small>Following</small></p>
+                            <!-- <button class="btn btn-info btn-block"><span class="fa fa-user"></span> View Profile </button> -->
+                        </div><!--/col-->
+                        <div class="col-xs-12 col-sm-4">
+                            <h2><strong><?php echo $reviews;?></strong></h2>                    
+                            <p><small>Reviews</small></p>  
+                        </div><!--/col-->
 
-    <!-- Display Plan to Go -->
-      <div class="row">
-          <div class="col-md-10">
-            <div class="panel panel-default">
-                <div class="panel-body">
-                  <div class="concert-brief">
-                    <div class="panel panel-primary">
-                        <div class="panel-heading text-center">
-                            <h2>
-                            <?php echo "<strong>".$username_public." Plans To Go</strong>";?>
-                            </h2>
-                        </div>
-                            <table class="table">
-                            <!-- php loop to show all plan to concert -->
-                               <?php
-                                    foreach ($plan_to as $con) {
-                                        echo "<th>";
-                                        echo "<div class=\"container-fluid\"><div class=\"row\"><div class=\"col-md-10\">";
-                                        echo "<div class=\"date-and-name\">";
-                                        echo "<h4><span class=\"fa fa-calendar fa-lg\"></span>   ".$con["start_time"]."</h4>";
-                                        echo "<h3><a href=\"artist_public.php?link=",urlencode($con["artistname"]),"\">".$con["artistname"]."</a></h3>";
-                                        echo "</div>";
-                                        echo "<div class=\"location\"><h4>".$con["vname"]."</h4><p>";
-                                        echo "<span class=\"addr\">";
-                                        echo "<span class=\"street\">  ".$con["street"]."</span>";
-                                        echo "<br>";
-                                        echo "<span class=\"city\">  ".$con["city"]."</span>  ,";
-                                        echo "<span class=\"state\">  ".$con["state"]."</span>  ,";
-                                        echo "<br>";
-                                        echo "<span class=\"zipcode\">  ".$con["zipcode"]."</span>";
-                                        echo "<a href=concert_info.php?link=".$con["cid"]."><h4>Concert Details</h4></a>";
-                                        echo "</span></p></div></div></div></div></th>";
-                                    }
-                                ?>
-                            </table><!-- table -->
-                    </div><!-- concert-brief -->
+                    </div><!--/row-->
                 </div><!--/panel-body-->
             </div><!--/panel-->
-          </div><!--/col--> 
-      </div><!--/row--> 
-    <!--Plan to go  -->
+        <!-- .user-profile  -->
 
-    <!-- Display Recommend List He Made-->
-      <div class="row">
-          <div class="col-md-10">
-            <div class="panel panel-default">
-                <div class="panel-body">
-                  <div class="concert-brief">
-                    <div class="panel panel-info">
-                        <div class="panel-heading text-center">
-                            <h2>
-                            <?php echo "<strong>".$username_public." 's Recommend List</strong>";?>
-                            </h2>
-                        </div>
-                            <table class="table">
-                            <!-- php loop concert -->
-                               <?php
-                                    foreach ($recomList as $con) {
-                                        echo "<tr>";
-                                        echo "<div class=\"container-fluid\"><div class=\"row\"><div class=\"col-md-10\">";
-                                        echo "<h3>Recommend List Name: <a href=\"show_recomList.php?link=", urlencode($con["listname"]),"\">".$con["listname"]."</a></h3>";
-                                        echo "<div class=\"date-and-name\">";
-                                        echo "<h4><span class=\"fa fa-calendar fa-lg\"></span>   ".$con["start_time"]."</h4>";
-                                        echo "<h4><a href=\"artist_public.php?link=", urlencode($con["artistname"]), "\">".$con["artistname"]."</a></h4>";
-                                        echo "</div>";
-                                        echo "<div class=\"location\"><h4>".$con["vname"]."</h4><p>";
-                                        echo "<span class=\"addr\">";
-                                        echo "<span class=\"city\">  ".$con["city"]."</span>  ,";
-                                        echo "<a href=concert_info.php?link=".$con["cid"]."><h4>Concert Details</h4></a>";
-                                        echo "</span></p></div></div></div></div></tr>";
-                                        echo "<br>";
-                                    }
-                                ?>
-                            </table><!-- table -->
-                    </div><!-- concert-brief -->
-                </div><!--/panel-body-->
-            </div><!--/panel-->
-          </div><!--/col--> 
-      </div><!--/row--> 
-    <!-- My Recommend List  -->
+        <!-- Display Plan to Go -->
+        <div class="panel panel-default">
+            <div class="panel-heading text-center">
+                <h3>
+                <?php echo "<strong>".$username_public." is going to...</strong>";?>
+                </h3>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                <!-- php loop to show all plan to concert -->
+                   <?php
+                        foreach ($plan_to as $con) {
+                            echo "<div class=\"col-md-4 concert-brief\">";
+                            echo "<div class=\"concert-caption\">";
+                            echo "<h4><span class=\"fa fa-calendar fa-lg\"> </span>   ".$con["start_time"]."   </h4>";
+                            echo "<h3><a href=\"artist_public.php?link=",urlencode($con["artistname"]),"\">".$con["artistname"]."</a></h3>";
+                            echo "</div>";
+                            echo "<div class=\"location\"><h4>".$con["vname"]."</h4><p>";
+                            echo "<span class=\"addr\">";
+                            echo "<span class=\"street\">  ".$con["street"]."</span>";
+                            echo "<br>";
+                            echo "<span class=\"city\">  ".$con["city"]."</span>  ,";
+                            echo "<br>";
+                            echo "<span class=\"state\">  ".$con["state"]."</span>  ,";
+                            echo "<span class=\"zipcode\">  ".$con["zipcode"]."</span>";
+                            echo "<a href=concert_info.php?link=".$con["cid"]."><h4>Details</h4></a>";
+                            echo "</span></p></div></div>";
+                        }
+                    ?>
+                </div><!-- .row -->
+            </div><!-- .panel-body-->
+        </div><!-- .panel-->
+        <!-- Plan to go  -->
 
-</section>
+        <!-- Display Recommend List He Made-->
+        <div class="panel panel-default">
+            <div class="panel-heading text-center">
+                <h3>
+                    <?php echo "<strong>".$username_public." 's Recommend Lists</strong>";?>
+                </h3>
+            </div> <!-- .panel-heading -->
 
-</section>
+            <div class="panel-body">
+                <div class="row">
+                    <!-- php loop concert -->
+                    <?php
+                    foreach ($recomList as $con) {
+                        echo "<div class=\"col-md-4 concert-brief\">";
+                        echo "<div class=\"concert-caption\">";
+                        echo "<h4><span class=\"fa fa-calendar fa-lg\"></span>   ".$con["start_time"]."</h4>";
+                        echo "<h3><a href=\"artist_public.php?link=", urlencode($con["artistname"]), "\">".$con["artistname"]."</a></h3>";
+                        echo "</div>";
+                        echo "<div class=\"location\"><span>".$con["vname"].", </span>";
+                        echo "<span class=\"addr\">";
+                        echo "<span class=\"city\">  ".$con["city"]."</span>";
+                        echo "<a href=concert_info.php?link=".$con["cid"]."><h6>Details</h6></a>";
+                        echo "<small>From the list: </small><h4><a href=\"show_recomList.php?link=", urlencode($con["listname"]),"\">".$con["listname"]."</a></h4>";
+                        echo "</span></div></div>";
+                    }
+                    ?>
+                </div><!-- .row -->
+            </div><!-- .panel-body-->
+        </div><!-- .panel-->
+        <!-- My Recommend List  -->
+
+    </div> <!-- #user_page.container -->
+
+
         <style>
             body {
                 background-image: url("./images/bg/register_bg.png");
@@ -345,16 +327,6 @@ if (isset($_SESSION["username"])) {
                 background-position: top center !important;
                 background-repeat: no-repeat !important;
                 background-attachment: fixed;
-                margin: 0;
-                padding: 0;
-                height: 100%;
-                width: 100%;
-            }
-
-            #user_panel {
-                padding-top: 100px;
-                color: #03695E;
-                padding-left: 140px;
             }
 
             .navbar-brand {
@@ -365,8 +337,15 @@ if (isset($_SESSION["username"])) {
               width: 638px;
               opacity: .95
             }
+
+            #user_page {
+                padding-top: 100px;
+                color: #03695E;
+            }
+
             .panel  {
                 opacity: 0.9;
+                box-shadow: rgba(0, 0, 0, 0.3) 20px 20px 20px;
             }
 
             .fa-star {
@@ -377,21 +356,13 @@ if (isset($_SESSION["username"])) {
                 color: #A30000;
             }
 
-            #user_panel .row {
-                margin-right: auto;
-                margin-left: auto;
-            }
-
             .navbar-collapse {
                 padding-left: 0px;
                 padding-right: 0px;
             }
 
-            .table {
-                font-size: 14px;
-            }
         </style>
-</section>
+
     <script type="text/javascript" src="js/jquery.js"></script>
     <script type="text/javascript" src="js/bootstrap.min.js"></script>
     <script type="text/javascript" src="js/bootstrap-select.js"></script>
